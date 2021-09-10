@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <title>Slamfest</title>
+    
+</head>
+
+<body>
+    <h1>-</h1>
+    <form id="form" method="post" action="/admin">
+        <!--input(type="text" name="num1" id="num1")-->
+        <!--input(type="text" name="num2" id="num2")-->
+        <textarea rows="4" cols="50" name="my_user_input" id="my_user_input_id"></textarea>
+        <br>
+        <button type="submit">submit</button>
+    </form>
+</body>
+<script type="text/javascript">
+    function submitOnEnter(event) {
+        if (event.which === 13) {
+            console.log("kala");
+            //event.target.form.dispatchEvent(new Event("submit", { cancelable: true }));
+            document.forms["form"].submit();
+            event.preventDefault(); // Prevents the addition of a new line in the text field (not needed in a lot of cases)
+        }
+    }
+
+    document.getElementById("my_user_input_id").addEventListener("keypress", submitOnEnter);
+</script>
+</html>

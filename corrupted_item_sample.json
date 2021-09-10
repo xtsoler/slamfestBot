@@ -1,0 +1,50 @@
+{
+  "iLevel": 88,
+  "name": "Bone nock",
+  "quality": "Crafted",
+  "sockets": 5,
+  "stats": [
+    {
+      "name": "item_maxdamage_percent",
+      "value": 269
+    },
+    {
+      "name": "item_mindamage_percent",
+      "value": 269
+    },
+    {
+      "name": "tohit",
+      "value": 112
+    },
+    {
+      "name": "secondary_mindamage",
+      "value": 3
+    },
+    {
+      "name": "normal_damage_reduction",
+      "value": 4
+    },
+    {
+      "name": "magic_damage_reduction",
+      "value": 2
+    },
+    {
+      "name": "item_fasterattackrate",
+      "value": 20
+    },
+    {
+      "name": "item_manaafterkill",
+      "value": 5
+    },
+    {
+      "name": "item_addskill_tab",
+      "skill": "Bow and Crossbow Skills (Amazon)",
+      "value": 1
+    },
+    {
+      "name": "corrupted",
+      "value": 32
+    }
+  ],
+  "type": "Ceremonial Bow"
+}

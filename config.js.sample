@@ -1,0 +1,8 @@
+module.exports = { 
+	twitch_username : '{your twitch username}',
+	twitch_token : 'oauth:{your twitch token}',
+	twitch_channels : ['{channel name 1}'],
+//	twitch_channels : ['{channel name 1'}, '{channel name 2}'],
+	admin_username : '{your admin username}',
+	admin_password : '{your admin password}'
+};

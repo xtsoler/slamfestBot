@@ -1,0 +1,78 @@
+html
+	head
+		title="slamfest bot"
+	body
+		h1="Commands"
+		
+		h3 !g or !guess
+		p Select one of the available choices during a slamfest round e.g. !g c1
+		
+		h3 !available
+		p The bot will reply with a list of all the currently available choices that are not taken by another user.
+		
+		h3 !taken
+		p The bot will show all the already taken choices of the current round and also display which user has each of these choices.
+		
+		h3 !points
+		p Shows how many wins and how many points you currently have. Also shows what choices you had on your wins. You can specify a user to see their stats e.g. !points user_x
+		
+		h3 !standings
+		p Current standings of the all the users that have at least one point will be shown.
+		
+		h3 !show
+		p !show item_type e.g. !show amulet will show all the possible choices for the specified item type. If no item type is specified, the choices for the current item type of the ongoing round will be displayed.
+		
+		h3 !slam_log
+		p A list of all the completed rounds that had a winner will be displayed.
+		
+		h3 !end_round
+		p This command is available only to the streamer and the mods of the channel.
+		p Forced end of current round is performed by the bot. This is to stop an ongoing round that was started by mistake with the wrong item type for exmaple.
+		
+		h3 !go_away
+		p This command is available only to the streamer and the mods of the channel.
+		p The bot will leave the chatroom.
+		
+		h3 !reset_standings
+		p This command is available only to the streamer and the mods of the channel.
+		p Current standings will be deleted. All users will lose their recorded wins.
+		
+		h3 !add_winner
+		p This command is available only to the streamer and the mods of the channel.
+		p Manually add a winner with the details of this virtual round. For example !add_winner amulet user_x c1 c1 means that user_x won an amulet round and winning choice was c1 and bonus choice was also c1. This will help to correct errors of previous rounds.
+		
+		h3 !delete_last_winner
+		p This command is available only to the streamer and the mods of the channel.
+		p This command will delete the last winner entry of the winners recorded by the bot.
+		
+		h3 !finish
+		p This command is available only to the streamer and the mods of the channel.
+		p !finish c1 will end the current round with the winning choice of c1. The winner will be appointed the calculated points and an entry will be recorded on the slam log.
+		
+		h3 !bonus
+		p This command is available only to the streamer and the mods of the channel.
+		p Specify a bonus choice manually with !bonus r1 for example. The bonus will be set automatically with !prep command but it can be changed manually with this command. If a round is ongoing !bonus with no specified option will print the current bonus choice.
+		
+		h3 !prep
+		p This command is available only to the streamer and the mods of the channel.
+		p !prep amulet will prepare a round for the item type amulet. If the item type specified is helm, armor, weapon or shield, the bot will require you to specify the number of possible sockets. !prep armor 2 will prepare an armor and add up to 2 sockets as choices. !prep armor 0 will prepare a round of armor with no socket choices available.
+		
+		h3 !start
+		p This command is available only to the streamer and the mods of the channel.
+		p Start the round and accept guesses by the users.
+		
+		h3 !block
+		p This command is available only to the streamer and the mods of the channel.
+		p Stop accepting guesses from the users.
+		
+		h3 !allow
+		p This command is available only to the streamer and the mods of the channel.
+		p Allow guesses from the users again for the currently ongoing round.
+		
+		h3 !verbose
+		p This command is available only to the streamer and the mods of the channel.
+		p The bot will type the available options in the chat.
+
+		h3 !laconic
+		p This command is available only to the streamer and the mods of the channel.
+		p The bot will not type the available options in the chat, they will only be shown on the status page.

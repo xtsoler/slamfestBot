@@ -1,0 +1,3 @@
+{   
+    "ignore": ["standings.json", "standings_*.json"] 
+}

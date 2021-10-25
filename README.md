@@ -4,7 +4,7 @@ This was implemented with very specific game rules, the description of which can
 However it should be easy to modify for your specific guessing game.
 
 #### How to run:
-#####This was last tested on node v17.0.1 and npm version 8.1.0.
+##### This was last tested on node v17.0.1 and npm version 8.1.0.
 Assuming you have installed node and npm as well as git:
 
 git clone https://github.com/xtsoler/slamfestBot.git
@@ -13,7 +13,7 @@ cd slamfestBot/
 
 cp config.js.sample config.js
 
-######Edit the config.js accordingly
+###### Edit the config.js accordingly
 nano config.js
 
 npm i tmi.js --save

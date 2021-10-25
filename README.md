@@ -1,6 +1,8 @@
 #### Twitch chat bot for a guessing game with a web interface for status and admin controls.
 You can see it in action in this youtube video: https://youtu.be/noaikj_Qm0Q or even better along with the chat action here: https://www.twitch.tv/videos/1036716034
+
 This was implemented with very specific game rules, the description of which can be found in the above videos.
+
 However it should be easy to modify for your specific guessing game.
 
 #### How to run:

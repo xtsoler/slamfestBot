@@ -8,6 +8,7 @@ However it should be easy to modify for your specific guessing game.
 Assuming you have installed node and npm as well as git:
 
 git clone https://github.com/xtsoler/slamfestBot.git
+
 cd slamfestBot/
 cp config.js.sample config.js
 

@@ -10,11 +10,14 @@ Assuming you have installed node and npm as well as git:
 git clone https://github.com/xtsoler/slamfestBot.git
 
 cd slamfestBot/
+
 cp config.js.sample config.js
 
 ######Edit the config.js accordingly
 nano config.js
+
 npm i tmi.js --save
+
 npm start
 
 #### The bot should now join the specified twitch chat channel.

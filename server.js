@@ -652,7 +652,7 @@ options.get('amulet').set('c7', 'Light Resist');
 options.get('amulet').set('c8', 'Fire Resist');
 options.get('amulet').set('m1', 'Thorns');
 options.get('amulet').set('m2', 'Gold Find');
-options.get('amulet').set('m3', 'All Resistances');
+options.get('amulet').set('m3', 'Pierce');
 options.get('amulet').set('m4', 'Replenish Life');
 options.get('amulet').set('m5', 'Block Chance');
 options.get('amulet').set('m6', 'Faster Hit Recovery');
@@ -665,6 +665,7 @@ options.get('amulet').set('r4', 'Enhanced Damage');
 options.get('amulet').set('r5', 'Faster Run Walk');
 options.get('amulet').set('r6', 'Faster Cast Rate');
 options.get('amulet').set('r7', '+1 Skill');
+options.get('amulet').set('r8', 'All Resistances');
 options.set('ring', new Map());
 options.get('ring').set('b', 'Brick');
 options.get('ring').set('c1', 'Strength');
@@ -727,7 +728,7 @@ options.get('gloves').set('c5', 'Cold Resist');
 options.get('gloves').set('c6', 'Poison Resist');
 options.get('gloves').set('c7', 'Light Resist');
 options.get('gloves').set('c8', 'Fire Resist');
-options.get('gloves').set('m1', 'Thorns');
+options.get('gloves').set('m1', 'Attack Rating');
 options.get('gloves').set('m2', 'Pierce');
 options.get('gloves').set('m3', 'Replenish Life');
 options.get('gloves').set('m4', 'Life Leech');
@@ -753,7 +754,7 @@ options.get('boots').set('c5', 'Cold Resist');
 options.get('boots').set('c6', 'Poison Resist');
 options.get('boots').set('c7', 'Light Resist');
 options.get('boots').set('c8', 'Fire Resist');
-options.get('boots').set('m1', 'Thorns');
+options.get('boots').set('m1', 'Block Speed');
 options.get('boots').set('m2', 'Max Life');
 options.get('boots').set('m3', 'Life Per Kill');
 options.get('boots').set('m4', 'Mana Per Kill');
@@ -786,8 +787,8 @@ options.get('armor').set('m4', 'Faster Run Walk');
 options.get('armor').set('m5', 'Flat Physical Damage Reduced');
 options.get('armor').set('m6', 'Flat Magic Damage Reduced');
 options.get('armor').set('m7', 'Cannot Be Frozen');
-options.get('armor').set('m8', 'Indestructible');
-options.get('armor').set('r1', 'Indestructible + Enhanced Defense');
+options.get('armor').set('m8', 'Indestructible + Enhanced Defense');
+options.get('armor').set('r1', '-Curse Duration');
 options.get('armor').set('r2', '+1 Skill');
 options.get('armor').set('r3', 'All Resistances');
 options.get('armor').set('r4', '% Physical Damage Reduced');
@@ -805,7 +806,7 @@ options.get('helm').set('c5', 'Cold Resist');
 options.get('helm').set('c6', 'Poison Resist');
 options.get('helm').set('c7', 'Light Resist');
 options.get('helm').set('c8', 'Fire Resist');
-options.get('helm').set('m1', 'Thorns');
+options.get('helm').set('m1', 'Indestructible + Enhanced Defense');
 options.get('helm').set('m2', 'Life Leech');
 options.get('helm').set('m3', 'Mana Leech');
 options.get('helm').set('m4', 'Max Life %');
@@ -813,7 +814,7 @@ options.get('helm').set('m5', 'Cannot Be Frozen');
 options.get('helm').set('m6', 'Life Per Kill');
 options.get('helm').set('m7', 'Mana Per Kill');
 options.get('helm').set('m8', 'Attack Rating + Light Radius');
-options.get('helm').set('r1', 'Indestructible + Enhanced Defense');
+options.get('helm').set('r1', '-Curse Duration');
 options.get('helm').set('r2', '+1 Skill');
 options.get('helm').set('r3', 'All Resistances');
 options.get('helm').set('r4', '% Physical Damage Reduced');
@@ -838,8 +839,8 @@ options.get('shield').set('m4', 'Block Chance + Increased Block Speed');
 options.get('shield').set('m5', 'Flat Physical Damage Reduced');
 options.get('shield').set('m6', 'Flat Magic Damage Reduced');
 options.get('shield').set('m7', 'Cannot Be Frozen');
-options.get('shield').set('m8', 'Indestructible');
-options.get('shield').set('r1', 'Indestructible + Enhanced Defense');
+options.get('shield').set('m8', 'Indestructible + Enhanced Defense');
+options.get('shield').set('r1', '-Curse Duration');
 options.get('shield').set('r2', '+1 Skill');
 options.get('shield').set('r3', 'All Resistances');
 options.get('shield').set('r4', '% Physical Damage Reduced');
@@ -859,7 +860,7 @@ options.get('weapon').set('c7', 'Mana Per Kill');
 options.get('weapon').set('c8', 'Mana');
 options.get('weapon').set('c9', 'Faster Hit Recovery');
 options.get('weapon').set('c10', 'Attack Rating');
-options.get('weapon').set('m1', 'Thorns');
+options.get('weapon').set('m1', 'Attack Rating 200+'); // was Thorns
 options.get('weapon').set('m2', 'Light Pierce');
 options.get('weapon').set('m3', 'Cold Pierce');
 options.get('weapon').set('m4', 'Poison Pierce');
@@ -1189,7 +1190,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 48: return ""; // indestructible
 			case 49: return ""; // indestructible + enhanced defense
 			case 50: return "r7"; // +1 skill (shield?)
-			case 51: return "m3"; // all res
+			case 51: return "r8"; // all res
 			case 52: return ""; // PDR %
 			case 53: return ""; // max fire + fire res
 			case 54: return ""; // max cold + cold res
@@ -1201,7 +1202,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 60: return "m2"; // GF
 			case 61: return ""; // increase max life
 			case 62: return ""; // reduced curse duration
-			case 63: return ""; // chance to pierce
+			case 63: return "m3"; // chance to pierce
 			case 64: return ""; // faster block rate (item_fasterblockrate)
 			case 65: return "r3"; // all attributes
 			case 66: return ""; // -target defense (item_fractionaltargetac)
@@ -1294,7 +1295,7 @@ function corruption_code_to_slam_code(the_code) {
 		switch (the_code) {
 			case 1: return "b"; // brick
 			case 2: return "r3"; // enhanced damage
-			case 3: return ""; // AR
+			case 3: return "m1"; // AR
 			case 4: return ""; // life after each hit "item_healafterhit"
 			case 5: return ""; // demon damage and AR
 			case 6: return ""; // -requirements
@@ -1309,7 +1310,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 15: return ""; // -enemy poison res
 			case 16: return ""; // FCR (weapon)
 			case 17: return ""; // Life Leech + Enhanced Damage
-			case 18: return "m1"; // attacker takes damage based on char lvl
+			case 18: return "m1"; // AR (was attacker takes damage based on char lvl)
 			case 19: return "r1"; // deadly strike
 			case 20: return "r2"; // IAS
 			case 21: return ""; // Crushing Blow
@@ -1331,7 +1332,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 38: return "c7"; // light res
 			case 39: return "c6"; // poison res
 			case 40: return "c4"; // regenerate / replenish mana
-			case 41: return "m1"; // attacker takes damage based on char lvl
+			case 41: return "m1"; // AR (was attacker takes damage based on char lvl)
 			case 42: return "r7"; // FCR
 			case 43: return "m8"; // increase max life
 			case 44: return ""; // FRW
@@ -1461,7 +1462,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 15: return ""; // -enemy poison res
 			case 16: return ""; // FCR (weapon)
 			case 17: return ""; // Life Leech + Enhanced Damage
-			case 18: return "m1"; // attacker takes damage based on char lvl
+			case 18: return "m1"; // block Speed (was attacker takes damage based on char lvl)
 			case 19: return ""; // deadly strike
 			case 20: return ""; // IAS
 			case 21: return ""; // Crushing Blow
@@ -1483,7 +1484,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 38: return "c7"; // light res
 			case 39: return "c6"; // poison res
 			case 40: return "c4"; // regenerate / replenish mana
-			case 41: return "m1"; // attacker takes damage based on char lvl
+			case 41: return "m1"; // block Speed (was attacker takes damage based on char lvl)
 			case 42: return ""; // FCR
 			case 43: return "m2"; // increase max life
 			case 44: return "r2"; // FRW
@@ -1506,7 +1507,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 61: return "m2"; // increase max life
 			case 62: return "r1"; // reduced curse duration
 			case 63: return ""; // chance to pierce
-			case 64: return ""; // faster block rate (item_fasterblockrate)
+			case 64: return "m1"; // faster block rate (item_fasterblockrate)
 			case 65: return ""; // all attributes
 			case 66: return ""; // -target defense (item_fractionaltargetac)
 			case 67: return ""; // icreased chance of blocking
@@ -1537,7 +1538,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 15: return ""; // -enemy poison res
 			case 16: return ""; // FCR (weapon)
 			case 17: return ""; // Life Leech + Enhanced Damage
-			case 18: return "m1"; // attacker takes damage based on char lvl
+			case 18: return "m1"; // indestructible + enhanced defense (was attacker takes damage based on char lvl)
 			case 19: return ""; // deadly strike
 			case 20: return ""; // IAS
 			case 21: return ""; // Crushing Blow
@@ -1559,7 +1560,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 38: return "c7"; // light res
 			case 39: return "c6"; // poison res
 			case 40: return "c4"; // regenerate / replenish mana
-			case 41: return "m1"; // attacker takes damage based on char lvl
+			case 41: return "m1"; // indestructible + enhanced defense (was attacker takes damage based on char lvl)
 			case 42: return ""; // FCR
 			case 43: return ""; // increase max life
 			case 44: return ""; // FRW
@@ -1567,7 +1568,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 46: return ""; // flat PDR
 			case 47: return ""; // flat MDR
 			case 48: return ""; // indestructible
-			case 49: return "r1"; // indestructible + enhanced defense
+			case 49: return "r1"; // reduced curse duration (was indestructible + enhanced defense)
 			case 50: return "r2"; // +1 skill (shield?)
 			case 51: return "r3"; // all res
 			case 52: return "r4"; // PDR %
@@ -1642,8 +1643,8 @@ function corruption_code_to_slam_code(the_code) {
 			case 45: return "m7"; // CBF
 			case 46: return "m5"; // flat PDR
 			case 47: return "m6"; // flat MDR
-			case 48: return "m8"; // indestructible
-			case 49: return "r1"; // indestructible + enhanced defense
+			case 48: return "m8"; // indestructible + enhanced defense (was indestructible)
+			case 49: return "r1"; // reduced curse duration (was indestructible + enhanced defense)
 			case 50: return "r2"; // +1 skill (shield?)
 			case 51: return "r3"; // all res
 			case 52: return "r4"; // PDR %
@@ -1718,8 +1719,8 @@ function corruption_code_to_slam_code(the_code) {
 			case 45: return "m7"; // CBF
 			case 46: return "m5"; // flat PDR
 			case 47: return "m6"; // flat MDR
-			case 48: return "m8"; // indestructible
-			case 49: return "r1"; // indestructible + enhanced defense
+			case 48: return "m8"; // indestructible + enhanced defense (was indestructible)
+			case 49: return "r1"; // reduced curse duration (was indestructible + enhanced defense)
 			case 50: return "r2"; // +1 skill (shield?)
 			case 51: return "r3"; // all res
 			case 52: return "r4"; // PDR %
@@ -1761,11 +1762,11 @@ function corruption_code_to_slam_code(the_code) {
 			case 11: return "c9"; // FHR (weapon)
 			case 12: return "m5"; // -enemy fire res
 			case 13: return "m2"; // -enemy light res
-			case 14: return "m2"; // -enemy cold res
+			case 14: return "m3"; // -enemy cold res
 			case 15: return "m4"; // -enemy poison res
 			case 16: return "m6"; // FCR (weapon)
 			case 17: return "m7"; // Life Leech + Enhanced Damage
-			case 18: return "m1"; // attacker takes damage based on char lvl
+			case 18: return "m1"; // AR 200+ (old was attacker takes damage based on char lvl)
 			case 19: return "m8"; // deadly strike
 			case 20: return "m9"; // IAS
 			case 21: return "m10"; // Crushing Blow
@@ -1787,7 +1788,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 38: return ""; // light res
 			case 39: return ""; // poison res
 			case 40: return ""; // regenerate / replenish mana
-			case 41: return "m1"; // attacker takes damage based on char lvl
+			case 41: return "m1"; // AR 200+ (old was attacker takes damage based on char lvl) ?unconfirmed?
 			case 42: return "m6"; // FCR
 			case 43: return ""; // increase max life
 			case 44: return ""; // FRW
@@ -1840,6 +1841,8 @@ function prep_finish(input_the_winning_choice) {
 		save_to_disk();
 	} else {
 		conclusion = conclusion + " The round had no winner.";
+		winners.set(winners.size + 1, { item_type: current_item_type, winner: "no winner", winning_choice: input_the_winning_choice, winning_choice_text: options.get(current_item_type).get(input_the_winning_choice), bonus: current_bonus, points: the_points });
+		save_to_disk();
 	}
 	console.log(conclusion);
 	return conclusion;

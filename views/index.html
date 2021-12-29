@@ -1,0 +1,135 @@
+<html>
+	<head>
+		<title>slamfest bot</title>
+		
+		<script src="/js/jquery-3.6.0.min.js"/></script>
+		<link rel="stylesheet" href="/css/style.css">
+		<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+</style>
+	</head>
+	<body>
+	Available commands:
+		<table>
+			<tr>
+				<th style="width:10%;">Command</th>
+				<th style="width:10%;">Available to</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td>!g or !guess</td>
+				<td>Everyone</td>
+				<td>Select one of the available choices during a slamfest round e.g. !g c1</td>
+			</tr>
+			<tr>
+				<td>!available</td>
+				<td>Everyone</td>
+				<td>The bot will reply with a list of all the currently available choices that are not taken by another user.</td>
+			</tr>
+			<tr>
+				<td>!taken</td>
+				<td>Everyone</td>
+				<td>The bot will show all the already taken choices of the current round and also display which user has each of these choices.</td>
+			</tr>
+			<tr>
+				<td>!points</td>
+				<td>Everyone</td>
+				<td>Shows how many wins and how many points you currently have. Also shows what choices you had on your wins. You can specify a user to see their stats e.g. !points user_x</td>
+			</tr>
+			<tr>
+				<td>!standings</td>
+				<td>Everyone</td>
+				<td>Current standings of the all the users that have at least one point will be shown.</td>
+			</tr>
+			<tr>
+				<td>!show</td>
+				<td>Everyone</td>
+				<td>!show item_type e.g. !show amulet will show all the possible choices for the specified item type. If no item type is specified, the choices for the current item type of the ongoing round will be displayed.</td>
+			</tr>
+			<tr>
+				<td>!slam_log</td>
+				<td>Everyone</td>
+				<td>A list of all the completed rounds that had a winner will be displayed.</td>
+			</tr>
+			<tr>
+				<td>!end_round</td>
+				<td>Streamer and mods</td>
+				<td>Forced end of current round is performed by the bot. This is to stop an ongoing round that was started by mistake with the wrong item type for exmaple.</td>
+			</tr>
+			<tr>
+				<td>!go_away</td>
+				<td>Streamer and mods</td>
+				<td>The bot will leave the chatroom.</td>
+			</tr>
+			<tr>
+				<td>!reset_standings</td>
+				<td>Streamer and mods</td>
+				<td>Current standings will be deleted. All users will lose their recorded wins.</td>
+			</tr>
+			<tr>
+				<td>!add_winner</td>
+				<td>Streamer and mods</td>
+				<td>Manually add a winner with the details of this virtual round. For example !add_winner amulet user_x c1 c1 means that user_x won an amulet round and winning choice was c1 and bonus choice was also c1. This will help to correct errors of previous rounds.</td>
+			</tr>
+			<tr>
+				<td>!delete_last_winner</td>
+				<td>Streamer and mods</td>
+				<td>This command will delete the last winner entry of the winners recorded by the bot.</td>
+			</tr>
+			<tr>
+				<td>!finish</td>
+				<td>Streamer and mods</td>
+				<td>!finish c1 will end the current round with the winning choice of c1. The winner will be appointed the calculated points and an entry will be recorded on the slam log.</td>
+			</tr>
+			<tr>
+				<td>!bonus</td>
+				<td>Streamer and mods</td>
+				<td>Specify a bonus choice manually with !bonus r1 for example. The bonus will be set automatically with !prep command but it can be changed manually with this command. If a round is ongoing !bonus with no specified option will print the current bonus choice.</td>
+			</tr>
+			<tr>
+				<td>!prep</td>
+				<td>Streamer and mods</td>
+				<td>!prep amulet will prepare a round for the item type amulet. If the item type specified is helm, armor, weapon or shield, the bot will require you to specify the number of possible sockets. !prep armor 2 will prepare an armor and add up to 2 sockets as choices. !prep armor 0 will prepare a round of armor with no socket choices available.</td>
+			</tr>
+			<tr>
+				<td>!start</td>
+				<td>Streamer and mods</td>
+				<td>Start the round and accept guesses by the users.</td>
+			</tr>
+			<tr>
+				<td>!block</td>
+				<td>Streamer and mods</td>
+				<td>Stop accepting guesses from the users.</td>
+			</tr>
+			<tr>
+				<td>!allow</td>
+				<td>Streamer and mods</td>
+				<td>Allow guesses from the users again for the currently ongoing round.</td>
+			</tr>
+			<tr>
+				<td>!accept_blocked</td>
+				<td>Streamer and mods</td>
+				<td>If anyone tried to guess while guesses were blocked, this command will accept that guess if it is still valid to do so.</td>
+			</tr>
+			<tr>
+				<td>!verbose</td>
+				<td>Streamer and mods</td>
+				<td>The bot will type the available options in the chat.</td>
+			</tr>
+			<tr>
+				<td>!laconic</td>
+				<td>Streamer and mods</td>
+				<td>The bot will not type the available options in the chat, they will only be shown on the status page.</td>
+			</tr>
+			<tr>
+				<td>!stats</td>
+				<td>Everyone</td>
+				<td>The bot will type some stats in the chat, e.g. total slams, total bricks.</td>
+			</tr>
+			
+		</table>
+	</body>
+</html>

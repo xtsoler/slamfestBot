@@ -1801,11 +1801,16 @@ const server = app.listen(7000, () => {
 	console.log(`Express running → PORT ${server.address().port}`);
 });
 
-app.get('/', (req, res) => {
+//app.get('/', (req, res) => {
 	//  res.send('Hello World!');
-	res.render('index');
+//	res.render('index');
+//});
+
+app.get('/', function (req, res) {
+	res.sendFile('views/index.html', {root: __dirname })
 });
-app.set('view engine', 'pug');
+
+//app.set('view engine', 'pug');
 
 app.get('/api/options', function(req, res) {
 	var Cs = [], Rs = [], Ms = [], Ss = [], b = "";

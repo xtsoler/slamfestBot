@@ -1,30 +1,512 @@
 <html>
+	<head>
+		<title>slamfest admin</title>
+		<script src="/js/jquery-3.6.0.min.js"/></script>
+		<script src="/js/jquery.modal.min.js"></script>
+		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/jquery.modal.min.css" />
+	</head>
+	<body>
+		<div>
+			<div class="popup-overlay" id="popup-sockets">
+				<div class="vertical-center">
+					<!--Creates the popup content-->
+					<br>
+					<label>Number of sockets for</label>
+					<br>
+					<br>
+					<label id="selected_item"></label>
+					<br>
+					<br>
+					<br>
+					<button id="sock_0" hidden="true" onClick="prep_with_sockets(0)" class="sock_buttons">0</button>
+					<button id="sock_1" hidden="true" onClick="prep_with_sockets(1)" class="sock_buttons">1</button>
+					<button id="sock_2" hidden="true" onClick="prep_with_sockets(2)" class="sock_buttons">2</button>
+					<button id="sock_3" hidden="true" onClick="prep_with_sockets(3)" class="sock_buttons">3</button>
+					<button id="sock_4" hidden="true" onClick="prep_with_sockets(4)" class="sock_buttons">4</button>
+					<button id="sock_5" hidden="true" onClick="prep_with_sockets(5)" class="sock_buttons">5</button>
+					<button id="sock_6" hidden="true" onClick="prep_with_sockets(6)" class="sock_buttons">6</button>
+					<br>
+					<br>
+					<!--popup's close button-->
+					<button id="close_popup" >Cancel</button> 
+				</div>
+			</div>
+			<div class="popup-overlay" id="popup_options" >
+				<fieldset class="column33">
+					<legend align="center">1 point</legend>
+					<ul class="list_c" id="list_c"></ul>
+					<ul class="list_b" id="list_b"></ul>
+					<ul class="list_s" id="list_s1"></ul>
+				</fieldset>
+				<fieldset class="column33">
+					<legend align="center">1.5 points</legend>
+					<ul class="list_m" id="list_m"></ul>
+					<ul class="list_s" id="list_s2"></ul>
+					<ul class="list_s" id="list_s3"></ul>
+					<ul class="list_s" id="list_s4"></ul>
+					<ul class="list_s" id="list_s5"></ul>
+					<ul class="list_s" id="list_s6"></ul>
+				</fieldset>
+				<fieldset class="column33">
+					<legend align="center">2 points</legend>
+					<ul class="list_r" id="list_r"></ul>
+				</fieldset>
+				<button id="close_popup2" onClick="$('#popup_options').removeClass('active');">Cancel</button>
+			</div>
+			<fieldset id="prep_list">
+				<legend>Prepare round for:</legend>
+				<div class="brightness">
+					<input type="image" onClick="prep('amulet', 0)" id="prep_amulet" alt="!prep amulet" src="/img/amu_2.png">
+					<input type="image" onClick="prep('ring', 0)" id="prep_ring" alt="!prep ring" src="/img/rin_3.png">
+					<input type="image" onClick="prep('belt', 0)" id="prep_belt" alt="!prep belt" src="/img/u246.png">
+					<input type="image" onClick="prep('gloves', 0)" id="prep_gloves" alt="!prep gloves" src="/img/ulg.png">
+					<input type="image" onClick="prep('boots', 0)" id="prep_boots" alt="!prep boots" src="/img/tbt.png">
+					<input type="image" id="prep_helm" alt="!prep helm x" src="/img/baa.png">
+					<input type="image" id="prep_armor" alt="!prep armor x" src="/img/spl.png">
+					<input type="image" id="prep_weapon" alt="!prep weapon x" src="/img/u261.png">
+					<input type="image" id="prep_shield" alt="!prep shield x" src="/img/u227.png">
+				</div>
+			</fieldset>
+		</div>
+		<div id="detect_corruption_div" hidden="true">
+			<label for="slamed_item_input_id">Copy the corrupted item from pd2 and paste here:</label>
+			<br>
+			<textarea id="slamed_item_input_id" name="slamed_item_input" rows="4" cols="50" onkeypress="if(window.event.keyCode === 13){detect_corruption()}"></textarea>
+			<br>
+			<button type="button" onClick="detect_corruption()" id="detect_corruption_button_id">detect corruption</button>
+			<button type="button" onClick="select_corruption()" id="select_corruption_button_id">select corruption manually</button>
+		</div>
+		<br>
+		<label id="admin_message"/></label>
+		<button type="button" onClick="finish_round()" id="finish_round_button_id" >finish with the detected slam code</button>
+		<br>
+		<br>
+		<div>
+			<div id="round_controls_div" >
+				<button type="button" id="end_round_button" hidden="true" onClick="end_round()">forced end round</button>
+				<button type="button" id="start_round_button" hidden="true" onClick="start_round()">start round</button>
+				<button type="button" id="block_guesses_button" hidden="true" onClick="block_guesses()">block guesses</button>
+				<button type="button" id="allow_guesses_button" hidden="true" onClick="allow_guesses()">allow guesses</button>
+				<button type="button" id="accept_blocked_guesses_button" hidden="true" onClick="accept_blocked_guesses()"></button>
+			</div>
+			<br>
+			<br>
+			<button type="button" id="restart_button">restart bot</button>
+		</div>
+	</body>
+	<script>
+    var xhr = new XMLHttpRequest();
+	var hide_start_round_button = false;
+	var hide_block_guesses_button = false;
+	
+	$(document).ready(function () {
+	
+		$("#prep_helm").on("click", function() {
+			$("#selected_item").html("helm");
+			$("#popup-sockets").addClass("active");
+			$("#prep_list").hide();
+			$("#detect_corruption_div").hide();
+			$("#slamed_item_input_id").val("");
+			$("#restart_button").hide();
+			$("#sock_0").show();
+			$("#sock_1").show();
+			$("#sock_2").show();
+			$("#sock_3").show();
+			$("#sock_4").hide();
+			$("#sock_5").hide();
+			$("#sock_6").hide();
+		});
+		$("#prep_armor").on("click", function() {
+			$("#selected_item").html("armor");
+			$("#popup-sockets").addClass("active");
+			$("#prep_list").hide();
+			$("#detect_corruption_div").hide();
+			$("#slamed_item_input_id").val("");
+			$("#restart_button").hide();
+			$("#sock_0").show();
+			$("#sock_1").show();
+			$("#sock_2").show();
+			$("#sock_3").show();
+			$("#sock_4").show();
+			$("#sock_5").hide();
+			$("#sock_6").hide();
+		});
+		$("#prep_weapon").on("click", function() {
+			$("#selected_item").html("weapon");
+			$("#popup-sockets").addClass("active");
+			$("#prep_list").hide();
+			$("#detect_corruption_div").hide();
+			$("#slamed_item_input_id").val("");
+			$("#restart_button").hide();
+			$("#sock_0").show();
+			$("#sock_1").show();
+			$("#sock_2").show();
+			$("#sock_3").show();
+			$("#sock_4").show();
+			$("#sock_5").show();
+			$("#sock_6").show();
+		});
+		$("#prep_shield").on("click", function() {
+			$("#selected_item").html("shield");
+			$("#popup-sockets").addClass("active");
+			$("#prep_list").hide();
+			$("#detect_corruption_div").hide();
+			$("#slamed_item_input_id").val("");
+			$("#restart_button").hide();
+			$("#sock_0").show();
+			$("#sock_1").show();
+			$("#sock_2").show();
+			$("#sock_3").show();
+			$("#sock_4").show();
+			$("#sock_5").hide();
+			$("#sock_6").hide();
+		});
+		
+		//removes the "active" class to .popup when the "Close" button is clicked 
+		$("#close_popup").on("click", function() {
+			$("#popup-sockets").removeClass("active");
+			$("#prep_list").show();
+			$("#detect_corruption_div").hide();
+			$("#slamed_item_input_id").val("");
+			$("#restart_button").show();
+		});
+	
+        $("#restart_button").on("click", function () {
+			let confirmAction = confirm("Are you sure to execute full restart of the bot?");
+			if (confirmAction) {
+				$("#prep_list").hide();
+				$("#detect_corruption_div").hide();
+				$("#slamed_item_input_id").val("");
+				$("#restart_button").hide();
 
-<head>
-    <title>Slamfest</title>
-    
-</head>
-
-<body>
-    <h1>-</h1>
-    <form id="form" method="post" action="/admin">
-        <!--input(type="text" name="num1" id="num1")-->
-        <!--input(type="text" name="num2" id="num2")-->
-        <textarea rows="4" cols="50" name="my_user_input" id="my_user_input_id"></textarea>
-        <br>
-        <button type="submit">submit</button>
-    </form>
-</body>
-<script type="text/javascript">
-    function submitOnEnter(event) {
-        if (event.which === 13) {
-            console.log("kala");
-            //event.target.form.dispatchEvent(new Event("submit", { cancelable: true }));
-            document.forms["form"].submit();
-            event.preventDefault(); // Prevents the addition of a new line in the text field (not needed in a lot of cases)
-        }
-    }
-
-    document.getElementById("my_user_input_id").addEventListener("keypress", submitOnEnter);
+				$.ajax({
+				url: "/api/restart"
+				}).done(function( data ) {
+					console.log( "server reply:", data );
+					$('#admin_message').html(data.message);
+					setTimeout(function() { window.location = '/admin'; }, 5000)
+				});
+			}
+		});
+		
+		/*
+		$("#detect_corruption_button_id").on("click", function () {
+			$.ajax({
+				type: "POST",
+				url: "/api/admin_command_post",
+				data: `{
+					"Id": 78912,
+					"Customer": "Jason Sweet",
+					"Quantity": 1,
+					"Price": 18.00
+				}`,
+				success: function () {
+					if (xhr.readyState === 4) {
+					console.log(xhr.status);
+					console.log(xhr.responseText);
+				}},
+				dataType: "json"
+				}).done(function( data ) {
+				console.log( "server reply:", data );
+				//$('#admin_message').html(data.message);
+				//setTimeout(function() { window.location = '/admin'; }, 5000)
+			});;
+		});
+		*/
+		refresh_admin();
+	});
+		
+	function prep_with_sockets(sockNumber) {
+		$("#popup-sockets").removeClass("active");
+		$("#prep_list").show();
+		prep($("#selected_item").html() ,sockNumber);
+		$("#restart_button").show();
+	}
+	
+	function prep(item_type ,sockNumber) {
+		$.ajax({
+			url: "/api/admin_command_get",
+			data: {"command": "!prep " + item_type + " " + sockNumber}
+		}).done(function( data ) {
+			console.log( "server reply:", data );
+			refresh_admin_payload();
+		});
+	}
+	
+	function finish_round() {
+		$.ajax({
+			url: "/api/admin_command_get",
+			data: {"command": "!finish"}
+		}).done(function( data ) {
+			console.log( "server reply:", data );
+			refresh_admin_payload();
+		});
+	}
+	
+	function manual_finish_round(option_code) {
+		$.ajax({
+			url: "/api/admin_command_get",
+			data: {"command": "!finish " + option_code }
+		}).done(function( data ) {
+			console.log( "server reply:", data );
+			refresh_admin_payload();
+			$("#popup_options").removeClass("active");
+		});
+	}
+	
+	function refresh_admin() {
+		refresh_admin_payload();
+		setTimeout(refresh_admin, 2500);
+	}
+	
+	function refresh_admin_payload() {
+		$.ajax({
+		url: "/api/admin_status"
+		}).done(function( data ) {
+			console.log( "data:", data );
+			$('#admin_message').html(data.message);
+			if(data.detected_slam_code !== ''){
+				$("#finish_round_button_id").show();
+			} else {
+				$("#finish_round_button_id").hide();
+			}
+			if(data.blocked_guesses > 0){
+				$("#accept_blocked_guesses_button").html("accept " + data.blocked_guesses + " blocked guesses");
+				$("#accept_blocked_guesses_button").show();
+			} else {
+				$("#accept_blocked_guesses_button").hide();
+			}
+			if(data.current_item_type !== ''){
+				$("#end_round_button").show();
+				if(!data.round_ongoing){
+					if(!hide_start_round_button){
+						$("#start_round_button").show();
+						$("#prep_list").show();
+					}
+					
+					$("#detect_corruption_div").hide();
+					$("#block_guesses_button").hide();
+					$("#allow_guesses_button").hide();
+					$("#slamed_item_input_id").val("");
+				} else {
+					if(!data.block_guesses){
+						if(!hide_block_guesses_button){
+							$("#block_guesses_button").show();
+						}
+						$("#allow_guesses_button").hide();
+						$("#detect_corruption_div").hide();
+					} else {
+						$("#detect_corruption_div").show();
+						$("#block_guesses_button").hide();
+						$("#allow_guesses_button").show();
+					}
+					
+					//$("#slamed_item_input_id").val("");
+					$("#start_round_button").hide();
+					$("#prep_list").hide();
+				}
+			} else {
+				$("#detect_corruption_div").hide();
+				$("#block_guesses_button").hide();
+				$("#allow_guesses_button").hide();
+				$("#slamed_item_input_id").val("");
+				hide_start_round_button = false;
+				$("#end_round_button").hide();
+				$("#start_round_button").hide();
+				if(!hide_start_round_button){
+					$("#prep_list").show();
+				}
+			}
+		});
+	}
+	
+	function end_round() {
+		let confirmAction = confirm("Are you sure you want to force a round end?");
+		if (confirmAction) {
+			$.ajax({
+				url: "/api/admin_command_get",
+				data: {"command": "!end_round"}
+			}).done(function( data ) {
+				$("#end_round_button").hide();
+				$("#start_round_button").hide();
+				console.log( "server reply:", data );
+			});
+		}
+	}
+	
+	function start_round() {
+		$.ajax({
+			url: "/api/admin_command_get",
+			data: {"command": "!start"}
+		}).done(function( data ) {
+			hide_start_round_button = true;
+			hide_block_guesses_button = false;
+			$("#start_round_button").hide();
+			$("#prep_list").hide();
+			console.log( "server reply:", data );
+		});
+	}
+	
+	function block_guesses() {
+		$.ajax({
+			url: "/api/admin_command_get",
+			data: {"command": "!block"}
+		}).done(function( data ) {
+			hide_start_round_button = true;
+			hide_block_guesses_button = true;
+			$("#start_round_button").hide();
+			$("#block_guesses_button").hide();
+			$("#prep_list").hide();
+			console.log( "server reply:", data );
+		});
+	}
+	
+	function accept_blocked_guesses() {
+		$.ajax({
+			url: "/api/admin_command_get",
+			data: {"command": "!accept_blocked"}
+		}).done(function( data ) {
+			console.log( "server reply:", data );
+			refresh_admin_payload();
+		});
+	}
+	
+	function allow_guesses() {
+		$.ajax({
+			url: "/api/admin_command_get",
+			data: {"command": "!allow"}
+		}).done(function( data ) {
+			hide_start_round_button = true;
+			//hide_block_guesses_button = false;
+			$("#start_round_button").hide();
+			$("#block_guesses_button").show();
+			$("#allow_guesses_button").hide();
+			$("#prep_list").hide();
+			console.log( "server reply:", data );
+		});
+	}
+	
+	function detect_corruption() {
+		$.ajax({
+			url: "/api/detect_corruption",
+			data: {"item_json": $("#slamed_item_input_id").val()}
+		}).done(function( data ) {
+			$("#slamed_item_input_id").val("");
+			console.log( "server reply:", data );
+			$('#admin_message').html(data.message);
+			refresh_admin_payload();
+		});
+	}
+	
+	function select_corruption() {
+		$("#popup_options").addClass("active");
+		
+		$.ajax({
+		url: "/api/options"
+		}).done(function( data ) {
+			if (data.break.text) {
+				//console.log("exei text");
+				var list_c = document.getElementById('list_c');
+				list_c.innerHTML = '';
+				var list_b = document.getElementById('list_b');
+				list_b.innerHTML = '';
+				var list_s1 = document.getElementById('list_s1');
+				list_s1.innerHTML = '';
+				var list_m = document.getElementById('list_m');
+				list_m.innerHTML = '';
+				var list_s2 = document.getElementById('list_s2');
+				list_s2.innerHTML = '';
+				var list_s3 = document.getElementById('list_s3');
+				list_s3.innerHTML = '';
+				var list_s4 = document.getElementById('list_s4');
+				list_s4.innerHTML = '';
+				var list_s5 = document.getElementById('list_s5');
+				list_s5.innerHTML = '';
+				var list_s6 = document.getElementById('list_s6');
+				list_s6.innerHTML = '';
+				var list_r = document.getElementById('list_r');
+				list_r.innerHTML = '';
+				
+				let listItem;
+				
+				for (const element of data.c_opts) {
+					listItem = document.createElement('li');
+					listItem.innerHTML = element.text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(element.code);};
+					list_c.appendChild(listItem);
+				}
+				
+				listItem = document.createElement('li');
+				listItem.innerHTML = data.break.text;
+				listItem.className  = "corruption_buttons";
+				listItem.onclick = function (){manual_finish_round(data.break.code);};
+				list_b.appendChild(listItem);
+	
+				if(data.s_opts[0]){
+					listItem = document.createElement('li');
+					listItem.innerHTML = data.s_opts[0].text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(data.s_opts[0].code);};
+					list_s1.appendChild(listItem);
+				}
+				
+				for (const element of data.m_opts) {
+					listItem = document.createElement('li');
+					listItem.innerHTML = element.text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(element.code);};
+					list_m.appendChild(listItem);
+				}
+				
+				if(data.s_opts[1]){
+					listItem = document.createElement('li');
+					listItem.innerHTML = data.s_opts[1].text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(data.s_opts[1].code);};
+					list_s2.appendChild(listItem);
+				}
+				if(data.s_opts[2]){
+					listItem = document.createElement('li');
+					listItem.innerHTML = data.s_opts[2].text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(data.s_opts[2].code);};
+					list_s3.appendChild(listItem);
+				}
+				if(data.s_opts[3]){
+					listItem = document.createElement('li');
+					listItem.innerHTML = data.s_opts[3].text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(data.s_opts[3].code);};
+					list_s4.appendChild(listItem);
+				}
+				if(data.s_opts[4]){
+					listItem = document.createElement('li');
+					listItem.innerHTML = data.s_opts[4].text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(data.s_opts[4].code);};
+					list_s5.appendChild(listItem);
+				}
+				if(data.s_opts[5]){
+					listItem = document.createElement('li');
+					listItem.innerHTML = data.s_opts[5].text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(data.s_opts[5].code);};
+					list_s6.appendChild(listItem);
+				}
+				
+				for (const element of data.r_opts) {
+					listItem = document.createElement('li');
+					listItem.innerHTML = element.text;
+					listItem.className  = "corruption_buttons";
+					listItem.onclick = function (){manual_finish_round(element.code);};
+					list_r.appendChild(listItem);
+				}
+				
+			}
+		});
+	}
+	
 </script>
 </html>

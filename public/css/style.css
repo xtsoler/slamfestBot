@@ -173,4 +173,69 @@ textarea{
   margin-bottom: 50px;
 }
 
+.brightness {
+    display: inline-block;
+   
+}
+.brightness input:hover {
+    opacity: .6;
+}
 
+.popup-overlay {
+  /*Hides pop-up when there is no "active" class*/
+  visibility: hidden;
+  position: absolute;
+  background: #b1b1b1;
+  /*
+  opacity: .70;
+  */
+  border: 3px solid #666666;
+  width: 97%;
+  height: 95%;
+  left: 1%
+}
+
+.popup-overlay.active {
+  /*displays pop-up when "active" class is present*/
+  visibility: visible;
+  text-align: center;
+}
+
+.vertical-center {
+  margin: 0;
+  position: absolute;
+  top: 35%;
+  left: 30%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.sock_buttons {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #f1f1f1;
+  color: black;
+  font-size: 13px;
+  padding: 16px 30px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.sock_buttons:hover {
+  background-color: black;
+  color: white;
+}
+
+.corruption_buttons {
+  cursor: pointer;
+  text-align: left;
+}
+
+.corruption_buttons:hover {
+  background-color: black;
+  color: white;
+}

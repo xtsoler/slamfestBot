@@ -3,6 +3,19 @@ var fs = require('fs');
 
 var { twitch_username, twitch_token, twitch_channels, admin_username, admin_password } = require('./config');
 //console.log(admin_password);
+var round_ongoing = false;
+var block_guesses = false;
+var current_item_type = "";
+var admin_message = "";
+
+var corruption_detection_output = "";
+var detected_slam_code = "";
+const express = require('express');
+const { config } = require('process');
+const app = express();
+var bodyparser = require('body-parser');
+var urlencodedparser = bodyparser.urlencoded({extended:false})
+
 
 if (typeof twitch_username === 'undefined'
 	|| typeof twitch_token === 'undefined'
@@ -188,31 +201,7 @@ function onMessageHandler(target, context, msg, self) {
 					client.say(target, displayName + " you can't do that.");
 					break;
 				}
-				if (round_ongoing) {
-					const the_winning_choice = commandName.split(" ")[1];
-					if (options.get(current_item_type).has(the_winning_choice)) {
-						var conclusion = "Round finished. winning choice was " + the_winning_choice + " " + options.get(current_item_type).get(the_winning_choice) + ".";
-						// if (guesses.has(the_winning_choice)) {
-
-						// 	var the_points = point_setup.get(get_winning_choice_type(the_winning_choice));
-						// 	if (the_winning_choice == current_bonus) {
-						// 		the_points = the_points * 2;
-						// 	}
-						// 	conclusion = conclusion + " The winner is " + guesses.get(the_winning_choice) + " !!! (winning " + the_points + " points)";
-						// 	winners.set(winners.size + 1, { item_type: current_item_type, winner: guesses.get(the_winning_choice), winning_choice: the_winning_choice, winning_choice_text: options.get(current_item_type).get(the_winning_choice), bonus: current_bonus, points: the_points });
-
-						// 	save_to_disk();
-						// } else {
-						// 	conclusion = conclusion + " The round had no winner.";
-						// }
-						client.say(target, prep_finish(the_winning_choice));
-						finishRound();
-					} else {
-						client.say(target, "please specify a valid winning choice");
-					}
-				} else {
-					client.say(target, "Round not started.");
-				}
+				finish_round_command(commandName, target);
 				break;
 			case "!bonus":
 				//supported_commands.set(supported_commands.size, command);
@@ -246,91 +235,13 @@ function onMessageHandler(target, context, msg, self) {
 				}
 				break;
 			case "!prep":
+				//console.log(commandName);
 				//supported_commands.set(supported_commands.size, command);
 				if (!has_access(context, target)) {
 					client.say(target, displayName + " you can't do that.");
 					break;
 				}
-				if (round_ongoing) {
-					client.say(target, "Round is already ongoing.");
-				} else {
-					var item_type = commandName.split(" ")[1];
-					//normilize plural item types
-					if (
-						item_type == "belts" ||
-						item_type == "amulets" ||
-						item_type == "rings" ||
-						item_type == "armors" ||
-						item_type == "helms" ||
-						item_type == "shields" ||
-						item_type == "weapons"
-					) {
-						item_type = item_type.slice(0, -1);
-					}
-					console.log(item_type);
-					if (options.has(item_type)) {
-						current_item_type = item_type;
-						var sock_explanation = "";
-						// check sockets if the item supports it
-						if (current_item_type == "armor" || current_item_type == "helm" || current_item_type == "shield" || current_item_type == "weapon") {
-							const num_of_socks = commandName.split(" ")[2];
-
-							if (commandName.split(" ").length < 3) {
-								client.say(target, "Please specify number of sockets e.g. !prep " + current_item_type + " 2 for 2 sockets max or !prep " + current_item_type + " 0 to disable sockets for this item");
-								current_item_type = "";
-								break;
-							} else if (num_of_socks == "0" || num_of_socks == "1" || num_of_socks == "2" || num_of_socks == "3" || num_of_socks == "4" || num_of_socks == "5" || num_of_socks == "6") {
-								options.get(current_item_type).delete("s1");
-								options.get(current_item_type).delete("s2");
-								options.get(current_item_type).delete("s3");
-								options.get(current_item_type).delete("s4");
-								options.get(current_item_type).delete("s5");
-								options.get(current_item_type).delete("s6");
-
-								for (i = 1; i <= parseInt(num_of_socks); i++) {
-									if (i == 1) {
-										options.get(current_item_type).set("s" + i, i + " free socket");
-										sock_explanation = " / socket s1 (points:" + point_setup.get('s1') + ")";
-									} else {
-										options.get(current_item_type).set("s" + i, i + " free sockets");
-										sock_explanation += " / sockets s2-s6 (points:" + point_setup.get('s') + ")";
-									}
-								}
-								choice_explanation_text += sock_explanation;
-							} else {
-								client.say(target, "Invalid option for number of sockets, please choose from 0 to 6.");
-								current_item_type = "";
-								break;
-							}
-						}
-						//console.log(getRandomItem(options.get(current_item_type)));
-						var randomAttr = getRandomItem(options.get(current_item_type));
-						//console.log(randomAttr[0]);
-						//console.log(randomAttr[1]);
-						current_bonus = randomAttr[0];
-
-
-						var choice_explanation_text = "[" + current_item_type + "] brick b (points:" + point_setup.get('b') + ") / commons c (points:" + point_setup.get('c') + ") / mid_rare m (points:" + point_setup.get('m') + ") / rare r (points:" + point_setup.get('r') + ")" + sock_explanation + ", bonus is x" + point_setup.get('bonus_x');
-						client.say(target, choice_explanation_text);
-						(async function () {
-							available_options(target, current_item_type, false, verbose);
-							await timer(1700);
-							client.say(target, "Item type " + item_type + " was set, e.g. to guess brick type: !g b");
-							client.say(target, "Bonus is " + randomAttr[0] + " " + randomAttr[1] + ".");
-						})();
-					} else {
-						var supported = "";
-						for (let [key, value] of options) {
-							if (supported === '') {
-								supported = key;
-							} else {
-								supported = supported + ", " + key;
-							}
-						}
-						client.say(target, "Invalid option. Currently supported options: " + supported);
-					}
-
-				}
+				prep(commandName, target);
 				break;
 			case "!show":
 				//supported_commands.set(supported_commands.size, command);
@@ -361,34 +272,15 @@ function onMessageHandler(target, context, msg, self) {
 					client.say(target, displayName + " you can't do that.");
 					break;
 				}
-				if (round_ongoing) {
-					client.say(target, "Round is already ongoing.");
-				} else {
-					if (current_item_type === '') {
-						client.say(target, "You didn't specify the item type. Please use !prep command.");
-					} else if (current_bonus === "") {
-						client.say(target, "You didn't specify which guess has bonus. Please use !bonus command.");
-					} else {
-						(async function () {
-							client.say(target, "Heads up!! Starting round in ...");
-							for (i = 5; i > 0; i--) {
-								//console.log(i);
-								client.say(target, "" + i);
-								await timer(1000);
-							}
-							//console.log("done");
-							initRound(target);
-						})();
-					}
-				}
+				start_round(target);
 				break;
 			case "!g":
 			case "!guess":
 				//supported_commands.set(supported_commands.size, "!guess or just !g");
 				if (round_ongoing) {
-					if (block_guesses) {
-						client.say(target, displayName + " sorry, no more guesses are accepted.");
-					} else {
+					//if (block_guesses) {
+					//	client.say(target, displayName + " sorry, no more guesses are accepted.");
+					//} else {
 						const choice = commandName.split(" ")[1];
 						if (options.get(current_item_type).has(choice)) {
 							// check if this user has won with this option before
@@ -415,24 +307,40 @@ function onMessageHandler(target, context, msg, self) {
 								if (Array.from(guesses.values()).includes(displayName)) {
 									for (let [key, value] of guesses) {
 										if (value == displayName) {
-											client.say(target, displayName + " changed their choice from " + key + " (" + options.get(current_item_type).get(key) + ") to " + choice + " (" + options.get(current_item_type).get(choice) + ")");
-											guesses.delete(key);
-											guesses.set(choice, displayName);
+											if (block_guesses) {
+												client.say(target, displayName + " sorry, no more guesses are accepted, you can't change your choice now.");
+											} else {
+												client.say(target, displayName + " changed their choice from " + key + " (" + options.get(current_item_type).get(key) + ") to " + choice + " (" + options.get(current_item_type).get(choice) + ")");
+												guesses.delete(key);
+												guesses.set(choice, displayName);
+											}
 											//log_status();
 											break;
 										}
 									}
 								} else {
-									guesses.set(choice, displayName);
-									//log_status();
-									client.say(target, displayName + " guessed " + choice + " " + options.get(current_item_type).get(choice));
+									if (block_guesses) {
+										client.say(target, displayName + " sorry, no more guesses are accepted.");
+										if (blocked_guesses.has(choice)) {
+											// choice is already occupied within the blocked_guesses so we do nothing.
+										} else {
+											// check if the user is already in the blocked_guesses and remove them as they now changed their choice
+											if (Array.from(blocked_guesses.values()).includes(displayName)) {
+												blocked_guesses.delete(key);
+											} 
+											blocked_guesses.set(choice, displayName);
+										}
+									} else {
+										guesses.set(choice, displayName);
+										//log_status();
+										client.say(target, displayName + " guessed " + choice + " " + options.get(current_item_type).get(choice));
+									}
 								}
 							}
 						} else {
 							client.say(target, displayName + " your guess is not a valid option.");
 						}
-					}
-
+					//}
 				} else {
 					client.say(target, displayName + " round not started.");
 				}
@@ -443,37 +351,7 @@ function onMessageHandler(target, context, msg, self) {
 					client.say(target, displayName + " you can't do that.");
 					break;
 				}
-				if (round_ongoing) {
-					if (block_guesses) {
-						client.say(target, "Guessed are already blocked for this round!");
-					} else {
-						var remaining_options = available_options(target, current_item_type, true, verbose);
-						//console.log("remaining_options=" + remaining_options);
-						const timer = ms => new Promise(res => setTimeout(res, ms));
-						(async function () {
-							await timer(1700);
-							if (remaining_options > 0) {
-								var countdown = 10;
-								client.say(target, "Blocking guess after countdown! Quick guess something!!!");
-								for (i = 10; i > 0; i--) {
-									//console.log(i);
-									if (i == 10 || i < 6) {
-										client.say(target, "" + i);
-									}
-									await timer(1000);
-								}
-								//console.log("done");
-							}
-
-							block_guesses = true;
-							client.say(target, "*** No more guessing! Time to slam! ***");
-							await timer(7000);
-							show_taken(target, verbose);
-						})();
-					}
-				} else {
-					client.say(target, "Round not started.");
-				}
+				block_guessing(target);
 				break;
 			case "!allow":
 				//supported_commands.set(supported_commands.size, command);
@@ -481,12 +359,7 @@ function onMessageHandler(target, context, msg, self) {
 					client.say(target, displayName + " you can't do that.");
 					break;
 				}
-				if (round_ongoing) {
-					block_guesses = false;
-					client.say(target, "Okay you still have time to guess. Quick!");
-				} else {
-					client.say(target, "Round not started.");
-				}
+				allow_guessing(target);
 				break;
 			case "!available":
 				//supported_commands.set(supported_commands.size, command);
@@ -527,6 +400,17 @@ function onMessageHandler(target, context, msg, self) {
 				}
 				verbose = false;
 				client.say(target, displayName + " verbose set to false.");
+				break;
+			case "!stats":
+                client.say(target, "Total slams: " + winners.size + " (" + get_total_bricks() + " bricks, " + get_total_no_winner_rounds() + " rounds had no winner)." + get_last_winner());
+                break;
+			case "!accept_blocked":
+				//supported_commands.set(supported_commands.size, command);
+				if (!has_access(context, target)) {
+					client.say(target, displayName + " you can't do that.");
+					break;
+				}
+				accept_blocked_guesses(target);
 				break;
 			default:
 				console.log(`* Unknown command ${commandName}`);
@@ -580,13 +464,42 @@ function has_access(context, target) {
 	//if (context['display-name'] == 'n1ckblame' ) isModUp = true;
 	return isModUp;
 }
+function get_total_bricks() {
+        let total = 0;
+        for (let [key, value] of winners) {
+                if ( value.winning_choice === 'b' ) {
+			total++;
+                }
+        }
+        return total;
+}
+function get_total_no_winner_rounds() {
+        let total = 0;
+        for (let [key, value] of winners) {
+                if ( value.points == 0 ) {
+                        total++;
+                }
+        }
+        return total;
+}
+function get_last_winner() {
+        let last_winner = "";
+        for (let [key, value] of winners) {
+                if ( value.points > 0 ) {
+                        last_winner = " Last winner was " + value.winner + "!";
+                }
+        }
+        return last_winner;
+}
 function get_sorted_leaderboard() {
 	let leaderboard = new Map();
 	for (let [key, value] of winners) {
-		if (leaderboard.has(value.winner)) {
-			leaderboard.set(value.winner, leaderboard.get(value.winner) + value.points);
-		} else {
-			leaderboard.set(value.winner, value.points);
+		if ( value.points > 0 ) {
+			if (leaderboard.has(value.winner)) {
+				leaderboard.set(value.winner, leaderboard.get(value.winner) + value.points);
+			} else {
+				leaderboard.set(value.winner, value.points);
+			}
 		}
 	}
 	const sortStringValues = (a, b) => (a[1] < b[1] && 1) || (a[1] === b[1] ? 0 : -1)
@@ -624,6 +537,7 @@ function load_from_disk() {
 }
 let verbose = true;
 let guesses = new Map();
+let blocked_guesses = new Map();
 //let supported_commands = new Map();
 let winners = new Map();
 let point_setup = new Map();
@@ -881,10 +795,6 @@ options.get('weapon').set('r8', 'Cold Damage + Faster Cast Rate');
 options.get('weapon').set('r9', 'Light Damage + Faster Cast Rate');
 options.get('weapon').set('r10', 'Poison Damage + Faster Cast Rate');
 
-var round_ongoing = false;
-var block_guesses = false;
-var current_item_type = "";
-
 function log_status() {
 	if (guesses.size > 0) {
 		console.log("current status of guesses:");
@@ -926,18 +836,212 @@ function getRandomItem(set) {
 }
 function finishRound() {
 	current_item_type = "";
+	detected_slam_code = "";
+	admin_message = "";
 	current_bonus = "";
 	round_ongoing = false;
 	block_guesses = false;
 	guesses = new Map();
-
+	blocked_guesses = new Map();
 }
 function initRound(target) {
 	guesses = new Map();
+	blocked_guesses = new Map();
 	client.say(target, "******** You can now start guessing!!! GO GO GO !!!! **********");
+	admin_message = "round started";
 	round_ongoing = true;
 	block_guesses = false;
 }
+
+function finish_round_command(commandName, target){
+	if (round_ongoing) {
+		const the_winning_choice = commandName.split(" ")[1];
+		if (options.get(current_item_type).has(the_winning_choice)) {
+			var conclusion = "Round finished. winning choice was " + the_winning_choice + " " + options.get(current_item_type).get(the_winning_choice) + ".";
+			client.say(target, prep_finish(the_winning_choice));
+			finishRound();
+		} else {
+			client.say(target, "please specify a valid winning choice");
+		}
+	} else {
+		client.say(target, "Round not started.");
+	}
+}
+
+function prep(commandName, target){
+	if (round_ongoing) {
+		client.say(target, "Round is already ongoing.");
+	} else {
+		var item_type = commandName.split(" ")[1];
+		
+		//normilize plural item types
+		if (
+			item_type == "belts" ||
+			item_type == "amulets" ||
+			item_type == "rings" ||
+			item_type == "armors" ||
+			item_type == "helms" ||
+			item_type == "shields" ||
+			item_type == "weapons"
+		) {
+			item_type = item_type.slice(0, -1);
+		}
+		
+		console.log(item_type);
+		if (options.has(item_type)) {
+			current_item_type = item_type;
+			var sock_explanation = "";
+			// check sockets if the item supports it
+			if (current_item_type == "armor" || current_item_type == "helm" || current_item_type == "shield" || current_item_type == "weapon") {
+				const num_of_socks = commandName.split(" ")[2];
+	
+				if (commandName.split(" ").length < 3) {
+					client.say(target, "Please specify number of sockets e.g. !prep " + current_item_type + " 2 for 2 sockets max or !prep " + current_item_type + " 0 to disable sockets for this item");
+					current_item_type = "";
+					//break;
+					return;
+				} else if (num_of_socks == "0" || num_of_socks == "1" || num_of_socks == "2" || num_of_socks == "3" || num_of_socks == "4" || num_of_socks == "5" || num_of_socks == "6") {
+					options.get(current_item_type).delete("s1");
+					options.get(current_item_type).delete("s2");
+					options.get(current_item_type).delete("s3");
+					options.get(current_item_type).delete("s4");
+					options.get(current_item_type).delete("s5");
+					options.get(current_item_type).delete("s6");
+	
+					for (i = 1; i <= parseInt(num_of_socks); i++) {
+						if (i == 1) {
+							options.get(current_item_type).set("s" + i, i + " free socket");
+							sock_explanation = " / socket s1 (points:" + point_setup.get('s1') + ")";
+						} else {
+							options.get(current_item_type).set("s" + i, i + " free sockets");
+							sock_explanation += " / sockets s2-s6 (points:" + point_setup.get('s') + ")";
+						}
+					}
+					//choice_explanation_text += sock_explanation;
+				} else {
+					client.say(target, "Invalid option for number of sockets, please choose from 0 to 6.");
+					current_item_type = "";
+					//break;
+					return;
+				}
+			}
+			//console.log(getRandomItem(options.get(current_item_type)));
+			var randomAttr = getRandomItem(options.get(current_item_type));
+			//console.log(randomAttr[0]);
+			//console.log(randomAttr[1]);
+			current_bonus = randomAttr[0];
+	
+	
+			var choice_explanation_text = "[" + current_item_type + "] brick b (points:" + point_setup.get('b') + ") / commons c (points:" + point_setup.get('c') + ") / mid_rare m (points:" + point_setup.get('m') + ") / rare r (points:" + point_setup.get('r') + ")" + sock_explanation + ", bonus is x" + point_setup.get('bonus_x');
+			client.say(target, choice_explanation_text);
+			(async function () {
+				available_options(target, current_item_type, false, verbose);
+				await timer(1700);
+				client.say(target, "Item type " + item_type + " was set, e.g. to guess brick type: !g b");
+				client.say(target, "Bonus is " + randomAttr[0] + " " + randomAttr[1] + ".");
+			})();
+		} else {
+			var supported = "";
+			for (let [key, value] of options) {
+				if (supported === '') {
+					supported = key;
+				} else {
+					supported = supported + ", " + key;
+				}
+			}
+			client.say(target, "Invalid option. Currently supported options: " + supported);
+		}
+	
+	}
+}
+
+function start_round(target){
+	if (round_ongoing) {
+		client.say(target, "Round is already ongoing.");
+	} else {
+		if (current_item_type === '') {
+			client.say(target, "You didn't specify the item type. Please use !prep command.");
+		} else if (current_bonus === "") {
+			client.say(target, "You didn't specify which guess has bonus. Please use !bonus command.");
+		} else {
+			(async function () {
+				admin_message = "start round countdown in progress..";
+				client.say(target, "Heads up!! Starting round in ...");
+				for (i = 5; i > 0; i--) {
+					//console.log(i);
+					client.say(target, "" + i);
+					await timer(1000);
+				}
+				//console.log("done");
+				if(current_item_type !== ''){
+					initRound(target);
+				} else {
+					client.say(target, "You didn't specify the item type. Please use !prep command.");
+				}
+			})();
+		}
+	}
+}
+
+function block_guessing(target){
+	if (round_ongoing) {
+		if (block_guesses) {
+			client.say(target, "Guessed are already blocked for this round!");
+		} else {
+			var remaining_options = available_options(target, current_item_type, true, verbose);
+			//console.log("remaining_options=" + remaining_options);
+			const timer = ms => new Promise(res => setTimeout(res, ms));
+			(async function () {
+				await timer(1700);
+				if (remaining_options > 0) {
+					var countdown = 10;
+					admin_message = "blocking guesses countdown in progress..";
+					client.say(target, "Blocking guess after countdown! Quick guess something!!!");
+					for (i = 10; i > 0; i--) {
+						//console.log(i);
+						if (i == 10 || i < 6) {
+							client.say(target, "" + i);
+						}
+						await timer(1000);
+					}
+					//console.log("done");
+				}
+				block_guesses = true;
+				detected_slam_code = "";
+				admin_message = "*** No more guessing! Time to slam! ***";
+				client.say(target, "*** No more guessing! Time to slam! ***");
+				await timer(7000);
+				show_taken(target, verbose);
+			})();
+		}
+	} else {
+		client.say(target, "Round not started.");
+	}
+}
+
+function allow_guessing(target){
+	if (round_ongoing) {
+		admin_message = "Guesses are allowed again.";
+		blocked_guesses = new Map();
+		block_guesses = false;
+		client.say(target, "Okay you still have time to guess. Quick!");
+	} else {
+		client.say(target, "Round not started.");
+	}
+}
+
+function accept_blocked_guesses(target){
+	if(blocked_guesses.size > 0){
+		for (let [key, value] of blocked_guesses) {
+			guesses.set(key, value);
+			client.say(target, "Added choice " +  key + " to " + value);
+		}
+	} else {
+		client.say(target, "There are no blocked guesses right now.");
+	}
+	blocked_guesses = new Map();
+}
+
 
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler(addr, port) {
@@ -975,166 +1079,26 @@ function joinChannel(the_channel) {
 	}
 }
 
-var corruption_detection_output = "";
-var detected_slam_code = "";
-const express = require('express');
-const { config } = require('process');
-const app = express();
-app.use(express.urlencoded({
-	extended: true
-}))
-app.use(express.static('public'));
+function prep_finish(input_the_winning_choice) {
+	var conclusion = "Round finished. winning choice was " + input_the_winning_choice + " " + options.get(current_item_type).get(input_the_winning_choice) + ".";
+	if (guesses.has(input_the_winning_choice)) {
 
-const server = app.listen(7000, () => {
-	console.log(`Express running → PORT ${server.address().port}`);
-});
-app.get('/', (req, res) => {
-	//  res.send('Hello World!');
-	res.render('index');
-});
-app.set('view engine', 'pug');
-
-app.get('/admin', function (req, res) {
-	const reject = () => {
-		res.setHeader('www-authenticate', 'Basic');
-		res.sendStatus(401);
-	}
-
-	const authorization = req.headers.authorization
-
-	if (!authorization) {
-		return reject();
-	}
-
-	const [username, password] = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString().split(':')
-
-	if (!(username === admin_username && password === admin_password)) {
-		return reject();
-	}
-
-	res.render('admin', { title: 'Slamfest', detected_slam_code, corruption_detection_output });
-	detected_slam_code = "";
-	//res.sendFile('views/admin.html', {root: __dirname })
-	corruption_detection_output = "";
-});
-
-app.get('/standings', function (req, res) {
-	var current_standings = []
-
-	if (winners.size > 0) {
-		for (let [key, value] of get_sorted_leaderboard()) {
-			current_standings.push(" " + key + " (" + value + " points)");
+		var the_points = point_setup.get(get_winning_choice_type(input_the_winning_choice));
+		if (input_the_winning_choice == current_bonus) {
+			the_points = the_points * 2;
 		}
-	}
-	res.render('standings', { title: 'Slamfest', message: '-', standings: current_standings });
-	//res.sendFile('views/admin.html', {root: __dirname })
-});
-app.get('/restart', function (req, res) {
-	const reject = () => {
-		res.setHeader('www-authenticate', 'Basic');
-		res.sendStatus(401);
-	}
-	const authorization = req.headers.authorization
+		conclusion = conclusion + " The winner is " + guesses.get(input_the_winning_choice) + " !!! (winning " + the_points + " points)";
+		winners.set(winners.size + 1, { item_type: current_item_type, winner: guesses.get(input_the_winning_choice), winning_choice: input_the_winning_choice, winning_choice_text: options.get(current_item_type).get(input_the_winning_choice), bonus: current_bonus, points: the_points });
 
-	if (!authorization) {
-		return reject();
-	}
-	const [username, password] = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString().split(':')
-
-	if (!(username === admin_username && password === admin_password)) {
-		return reject();
-	}
-	fs.writeFile('dummy.json', ""+Date.now(), function (err) {
-		if (err) throw err;
-		console.log('Saved!');
-	});
-	
-	res.redirect('/admin',);
-	(async function () {
-		await timer(1700);
-		process.exit();
-	})();
-	
-});
-
-app.post("/admin", function (req, res) {
-	if (String(req.body.confirm_round_end) === "on") {
-		console.log("confirmed");
-		client.say(twitch_channels[0], prep_finish(String(req.body.confirmed_winning_choice)));
-		if (round_ongoing) {
-			if (block_guesses) {
-				finishRound();
-				detected_slam_code = "";
-			}
-		}
+		save_to_disk();
 	} else {
-		var user_input = String(req.body.my_user_input);
-		corruption_detection_output = "";
-
-		//var result = num1 + num2;
-		//console.log("mple. " + user_input);
-		var user_input_corrupted_item;
-		var corrupted_value = null;
-		//current_item_type = "belt";
-
-
-		if (round_ongoing) {
-			if (block_guesses) {
-				if (user_input !== "") {
-					try {
-						user_input_corrupted_item = JSON.parse(user_input);
-						for (var i = 0; i < user_input_corrupted_item.stats.length; i++) {
-							if (user_input_corrupted_item.stats[i].name == 'corrupted') {
-								//console.log(user_input_corrupted_item.stats[i].value)
-								corrupted_value = user_input_corrupted_item.stats[i].value;
-							}
-						}
-
-						if (corrupted_value !== null) {
-							//console.log(corrupted_value);
-							//console.log(current_item_type);
-
-							var the_slam_code = corruption_code_to_slam_code(corrupted_value);
-
-							if (the_slam_code === "s") {
-								the_slam_code = "s" + user_input_corrupted_item.sockets;
-							}
-
-							if (the_slam_code !== null && the_slam_code !== undefined && the_slam_code !== "") {
-								corruption_detection_output = "detected slam code: " + the_slam_code + " -> " + options.get(current_item_type).get(the_slam_code);
-								console.log(corruption_detection_output);
-								detected_slam_code = the_slam_code;
-
-							} else {
-								corruption_detection_output = "slam code for " + current_item_type + " could not be determined. (corrupted_value=" + corrupted_value + ")";
-								console.log(corruption_detection_output);
-								console.log(user_input_corrupted_item);
-							}
-
-						} else {
-							corruption_detection_output = "corruption not detected.";
-							console.log(corruption_detection_output);
-						}
-					} catch (e) {
-						corruption_detection_output = "not a valid item json input";
-						console.log(corruption_detection_output);
-					}
-				} else {
-					corruption_detection_output = "";
-				}
-			} else {
-				corruption_detection_output = "Guesses are still open, please !block first";
-				console.log(corruption_detection_output);
-			}
-
-		} else {
-			corruption_detection_output = "Round not started.";
-			console.log(corruption_detection_output);
-		}
+		conclusion = conclusion + " The round had no winner.";
+		winners.set(winners.size + 1, { item_type: current_item_type, winner: "no winner", winning_choice: input_the_winning_choice, winning_choice_text: options.get(current_item_type).get(input_the_winning_choice), bonus: current_bonus, points: 0 });
+		save_to_disk();
 	}
-	//res.send("Addition - " + result);
-	res.redirect('/admin');
-});
+	console.log(conclusion);
+	return conclusion;
+}
 
 function corruption_code_to_slam_code(the_code) {
 	if (the_code === 32) {
@@ -1827,42 +1791,28 @@ function corruption_code_to_slam_code(the_code) {
 	return null;
 }
 
-function prep_finish(input_the_winning_choice) {
-	var conclusion = "Round finished. winning choice was " + input_the_winning_choice + " " + options.get(current_item_type).get(input_the_winning_choice) + ".";
-	if (guesses.has(input_the_winning_choice)) {
 
-		var the_points = point_setup.get(get_winning_choice_type(input_the_winning_choice));
-		if (input_the_winning_choice == current_bonus) {
-			the_points = the_points * 2;
-		}
-		conclusion = conclusion + " The winner is " + guesses.get(input_the_winning_choice) + " !!! (winning " + the_points + " points)";
-		winners.set(winners.size + 1, { item_type: current_item_type, winner: guesses.get(input_the_winning_choice), winning_choice: input_the_winning_choice, winning_choice_text: options.get(current_item_type).get(input_the_winning_choice), bonus: current_bonus, points: the_points });
+app.use(express.urlencoded({
+	extended: true
+}))
+app.use(express.static('public'));
 
-		save_to_disk();
-	} else {
-		conclusion = conclusion + " The round had no winner.";
-		winners.set(winners.size + 1, { item_type: current_item_type, winner: "no winner", winning_choice: input_the_winning_choice, winning_choice_text: options.get(current_item_type).get(input_the_winning_choice), bonus: current_bonus, points: the_points });
-		save_to_disk();
-	}
-	console.log(conclusion);
-	return conclusion;
-}
+const server = app.listen(7000, () => {
+	console.log(`Express running → PORT ${server.address().port}`);
+});
 
-app.get('/status', function (req, res) {
+app.get('/', (req, res) => {
+	//  res.send('Hello World!');
+	res.render('index');
+});
+app.set('view engine', 'pug');
+
+app.get('/api/options', function(req, res) {
 	var Cs = [], Rs = [], Ms = [], Ss = [], b = "";
-	var current_standings = []
-
-	if (winners.size > 0) {
-		for (let [key, value] of get_sorted_leaderboard()) {
-			current_standings.push(" " + key + " (" + value + "pts)");
-		}
-	}
-
-	var header = "";
-	//current_item_type = "ring";
 	let the_break = {
 		text: "",
-		style: ""
+		style: "",
+		code: ""
 	}
 	let all_opts = {
 		break: the_break,
@@ -1873,13 +1823,10 @@ app.get('/status', function (req, res) {
 	}
 
 	if (current_item_type !== '') {
-		if (!round_ongoing) {
-			header = "Round not started. ";
-		}
-		header = header + "Current item type is '" + current_item_type + "'";
 		all_opts.break = {
 			text: "b: brick",
-			style: ""
+			style: "",
+			code: "b"
 		}
 
 		if (current_bonus === 'b') {
@@ -1898,7 +1845,8 @@ app.get('/status', function (req, res) {
 		for (let [key, value] of options.get(current_item_type)) {
 			var entry = {
 				text: key + ": " + value,
-				style: ""
+				style: "",
+				code: key
 			}
 
 			if (current_bonus === key) {
@@ -1936,10 +1884,260 @@ app.get('/status', function (req, res) {
 		} else {
 			//console.log("Guesses are still open, please !block first!");
 		}
+	}
+	res.json(all_opts);
+});
+
+app.get('/api/standings', function(req, res) {
+     res.json(mapToJson(get_sorted_leaderboard()));
+});
+
+app.get('/api/header', function(req, res) {
+	var header = "";
+	if (current_item_type !== '') {
+		if (!round_ongoing) {
+			header = "Round not started.";
+		}
+		header = header + " Current item type is '" + current_item_type + "'";
 	} else {
-		header = "Round not started.";
+		header = "Round not started. Total slams: " + winners.size + " (" + get_total_bricks() + " bricks, " + get_total_no_winner_rounds() + " rounds had no winner)." + get_last_winner();
+	}
+	
+	res.json({
+		message: header
+    });
+});
+
+app.get('/api/admin_status', function(req, res) {
+	res.json({
+		current_item_type: current_item_type,
+		round_ongoing: round_ongoing,
+		message: admin_message,
+		block_guesses: block_guesses,
+		detected_slam_code: detected_slam_code,
+		blocked_guesses: blocked_guesses.size
+    });
+});
+
+app.get('/api/admin_command_get', function(req, res) {
+	const reject = () => {
+		res.setHeader('www-authenticate', 'Basic');
+		res.sendStatus(401);
 	}
 
-	res.render('status', { title: 'Slamfest', the_header: header, all_opts, standings: current_standings });
-	//res.sendFile('views/admin.html', {root: __dirname })
+	const authorization = req.headers.authorization
+
+	if (!authorization) {
+		return reject();
+	}
+
+	const [username, password] = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString().split(':')
+
+	if (!(username === admin_username && password === admin_password)) {
+		return reject();
+	}
+	console.log('web command received (get)');
+	
+	//console.log(req.query.command);
+	if(req.query.command){
+		//	if(req.query.p1 === 'amulet'){
+		//		client.say(twitch_channels[0], req.query.item_type);
+		//	}
+		if(req.query.command.startsWith("!prep")){
+			prep(req.query.command, twitch_channels[0]);
+		} else if(req.query.command.startsWith("!end_round")){
+			client.say(twitch_channels[0], "Forced round end.");
+			finishRound();
+		} else if(req.query.command.startsWith("!start")){
+			start_round(twitch_channels[0]);
+		} else if(req.query.command.startsWith("!block")){
+			block_guessing(twitch_channels[0]);
+		} else if(req.query.command.startsWith("!allow")){
+			allow_guessing(twitch_channels[0]);
+		} else if(req.query.command.startsWith("!finish")){
+			finish_round_command(req.query.command + " " + detected_slam_code, twitch_channels[0]);
+		} else if(req.query.command.startsWith("!accept_blocked")){
+			accept_blocked_guesses(twitch_channels[0]);
+		}
+	}
+	console.log(req.query);
+	
+	res.json({
+		command_reply: "ok (get)"
+    });
+});
+/*
+app.post('/api/admin_command_post', urlencodedparser, function (req, res) {
+	const reject = () => {
+		res.setHeader('www-authenticate', 'Basic');
+		res.sendStatus(401);
+	}
+
+	const authorization = req.headers.authorization
+
+	if (!authorization) {
+		return reject();
+	}
+
+	const [username, password] = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString().split(':')
+
+	if (!(username === admin_username && password === admin_password)) {
+		return reject();
+	}
+	//if(req.query.cmd === 'prep'){
+	//	if(req.query.p1 === 'amulet'){
+			client.say(twitch_channels[0], "test2");
+	//	}
+	//}
+	console.log('web command received (post)');
+	console.log(req.body);
+	res.json({
+		command_reply: "ok (post)"
+    });
+});
+*/
+app.get('/api/restart', function (req, res) {
+	const reject = () => {
+		res.setHeader('www-authenticate', 'Basic');
+		res.sendStatus(401);
+	}
+	const authorization = req.headers.authorization
+
+	if (!authorization) {
+		return reject();
+	}
+	const [username, password] = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString().split(':')
+
+	if (!(username === admin_username && password === admin_password)) {
+		return reject();
+	}
+	fs.writeFile('dummy.json', ""+Date.now(), function (err) {
+		if (err) throw err;
+		console.log('Saved!');
+	});
+	
+	admin_message = "restart was initiated, refreshing page in 5 seconds..";
+	
+	res.json({
+		message: admin_message
+    });
+	(async function () {
+		await timer(1700);
+		process.exit();
+	})();
+	
+});
+
+app.get('/api/detect_corruption', function (req, res) {
+	const reject = () => {
+		res.setHeader('www-authenticate', 'Basic');
+		res.sendStatus(401);
+	}
+	const authorization = req.headers.authorization
+
+	if (!authorization) {
+		return reject();
+	}
+	const [username, password] = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString().split(':')
+
+	if (!(username === admin_username && password === admin_password)) {
+		return reject();
+	}
+	console.log(req.query);
+	
+	var user_input = req.query.item_json;
+	corruption_detection_output = "";
+
+	//var result = num1 + num2;
+	//console.log("mple. " + user_input);
+	var user_input_corrupted_item;
+	var corrupted_value = null;
+	//current_item_type = "belt";
+	detected_slam_code = "";
+
+	if (round_ongoing) {
+		if (block_guesses) {
+			if (user_input !== "") {
+				try {
+					user_input_corrupted_item = JSON.parse(user_input);
+					for (var i = 0; i < user_input_corrupted_item.stats.length; i++) {
+						if (user_input_corrupted_item.stats[i].name == 'corrupted') {
+							//console.log(user_input_corrupted_item.stats[i].value)
+							corrupted_value = user_input_corrupted_item.stats[i].value;
+						}
+					}
+
+					if (corrupted_value !== null) {
+						//console.log(corrupted_value);
+						//console.log(current_item_type);
+
+						var the_slam_code = corruption_code_to_slam_code(corrupted_value);
+
+						if (the_slam_code === "s") {
+							the_slam_code = "s" + user_input_corrupted_item.sockets;
+						}
+
+						if (the_slam_code !== null && the_slam_code !== undefined && the_slam_code !== "") {
+							corruption_detection_output = "detected slam code: " + the_slam_code + " -> " + options.get(current_item_type).get(the_slam_code);
+							console.log(corruption_detection_output);
+							detected_slam_code = the_slam_code;
+
+						} else {
+							corruption_detection_output = "slam code for " + current_item_type + " could not be determined. (corrupted_value=" + corrupted_value + ")";
+							console.log(corruption_detection_output);
+							console.log(user_input_corrupted_item);
+						}
+
+					} else {
+						corruption_detection_output = "corruption not detected.";
+						console.log(corruption_detection_output);
+					}
+				} catch (e) {
+					corruption_detection_output = "not a valid item json input";
+					console.log(corruption_detection_output);
+				}
+			} else {
+				corruption_detection_output = "item input empty!";
+			}
+		} else {
+			corruption_detection_output = "Guesses are still open, please !block first";
+			console.log(corruption_detection_output);
+		}
+
+	} else {
+		corruption_detection_output = "Round not started.";
+		console.log(corruption_detection_output);
+	}
+	
+	
+	admin_message = corruption_detection_output;
+	
+	res.json({
+		message: admin_message
+    });
+});
+
+app.get('/status', function (req, res) {
+	res.sendFile('views/status.html', {root: __dirname })
+});
+
+app.get('/admin', function (req, res) {
+	const reject = () => {
+		res.setHeader('www-authenticate', 'Basic');
+		res.sendStatus(401);
+	}
+
+	const authorization = req.headers.authorization
+
+	if (!authorization) {
+		return reject();
+	}
+
+	const [username, password] = Buffer.from(authorization.replace('Basic ', ''), 'base64').toString().split(':')
+
+	if (!(username === admin_username && password === admin_password)) {
+		return reject();
+	}
+
+	res.sendFile('views/admin.html', {root: __dirname })
 });

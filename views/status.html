@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<title>slamfest status</title>
+		
+		<script src="/js/jquery-3.6.0.min.js"/></script>
+		<script src="/js/poller.js"/></script>
+		<link rel="stylesheet" href="/css/style.css">
+	</head>
+	<body>
+		<label id="header"/></label>
+		<br>
+		<label id="standings_header"></label><div class="container" id="standings_div"><ol class="my_li" id="standings_list"></ol></div>
+		<div id="options_div">
+			<fieldset class="column33">
+				<legend align="center">1 point</legend>
+				<ul class="list_c" id="list_c"></ul>
+				<ul class="list_b" id="list_b"></ul>
+				<ul class="list_s" id="list_s1"></ul>
+			</fieldset>
+			<fieldset class="column33">
+				<legend align="center">1.5 points</legend>
+				<ul class="list_m" id="list_m"></ul>
+				<ul class="list_s" id="list_s2"></ul>
+				<ul class="list_s" id="list_s3"></ul>
+				<ul class="list_s" id="list_s4"></ul>
+				<ul class="list_s" id="list_s5"></ul>
+				<ul class="list_s" id="list_s6"></ul>
+			</fieldset>
+			<fieldset class="column33">
+				<legend align="center">2 points</legend>
+				<ul class="list_r" id="list_r"></ul>
+			</fieldset>
+		</div>
+                
+                   
+	</body>
+	<script>
+		$(document).ready(function () {
+			console.log("poller started");
+			refresh();
+		});
+	</script>
+</html>

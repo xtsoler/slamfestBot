@@ -384,7 +384,8 @@ function onMessageHandler(target, context, msg, self) {
 				break;
 			case "!commands":
 				client.say(target, displayName + " a list of all supported slamfest commands can be found here: https://slamfest.jnodes.net/");
-			//supported_commands.set(supported_commands.size, command);
+				//supported_commands.set(supported_commands.size, command);
+				break;
 			case "!verbose":
 				if (!has_access(context, target)) {
 					client.say(target, displayName + " you can't do that.");

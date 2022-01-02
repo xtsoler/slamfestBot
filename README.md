@@ -28,3 +28,6 @@ The web interface should also work under the urls:
 http://localhost:7000/status - This can be an overlay on OBS for the stream to show the status and the still available choices.
 
 http://localhost:7000/admin - A basic console for some shortcuts for the streamer that provides an extra way to control the bot other than the chat commands.
+
+#### Season 4 corruption codes can be found here:
+https://docs.google.com/spreadsheets/d/1UxEPjrb6kS-Rk6Xcneqzb7MahDJP3LguLWpajWiyBsE/edit?usp=sharing

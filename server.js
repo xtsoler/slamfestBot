@@ -76,7 +76,7 @@ function onMessageHandler(target, context, msg, self) {
 					}
 					wins_text = "";
 					for (let [key, value] of winners) {
-						if (value.winner == the_user) {
+						if (value.winner.toLowerCase() == the_user) {
 							the_points += value.points;
 							total_wins++;
 							if (wins_text == "") {
@@ -1527,7 +1527,7 @@ function corruption_code_to_slam_code(the_code) {
 			case 40: return "c4"; // regenerate / replenish mana
 			case 41: return "m1"; // indestructible + enhanced defense (was attacker takes damage based on char lvl)
 			case 42: return ""; // FCR
-			case 43: return ""; // increase max life
+			case 43: return "m4"; // increase max life
 			case 44: return ""; // FRW
 			case 45: return "m5"; // CBF
 			case 46: return ""; // flat PDR

@@ -795,6 +795,12 @@ options.get('weapon').set('r7', 'Fire Damage + Faster Cast Rate');
 options.get('weapon').set('r8', 'Cold Damage + Faster Cast Rate');
 options.get('weapon').set('r9', 'Light Damage + Faster Cast Rate');
 options.get('weapon').set('r10', 'Poison Damage + Faster Cast Rate');
+options.set('anni', new Map());
+options.get('anni').set('b', 'Brick');
+options.get('anni').set('c1', '+1 Skill');
+options.get('anni').set('c2', 'All Resistances');
+options.get('anni').set('c3', 'Vitality');
+options.get('anni').set('c4', '+% Experience');
 
 function log_status() {
 	if (guesses.size > 0) {
@@ -1786,6 +1792,15 @@ function corruption_code_to_slam_code(the_code) {
 			case 71: return ""; // energy
 			case 72: return ""; // max all res
 			case 73: return ""; // block chance + block speed
+			default:
+		}
+	} else if (current_item_type === 'anni') {
+		switch (the_code) {
+			case 1: return "b"; // brick
+			case 77: return "c1"; // +1 skill
+			case 78: return "c3"; // vitality
+			case 79: return "c4"; // +% xp
+			case 80: return "c2"; // all res
 			default:
 		}
 	}

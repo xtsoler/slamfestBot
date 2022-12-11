@@ -557,6 +557,7 @@ let options = new Map();
 
 options.set('amulet', new Map());
 options.get('amulet').set('b', 'Brick');
+// amu tier 1
 options.get('amulet').set('c1', 'Strength');
 options.get('amulet').set('c2', 'Dexterity');
 options.get('amulet').set('c3', 'Energy');
@@ -565,7 +566,8 @@ options.get('amulet').set('c5', 'Cold Resist');
 options.get('amulet').set('c6', 'Poison Resist');
 options.get('amulet').set('c7', 'Light Resist');
 options.get('amulet').set('c8', 'Fire Resist');
-options.get('amulet').set('m1', 'Thorns');
+// amu tier 2
+options.get('amulet').set('m1', 'All Attributes');
 options.get('amulet').set('m2', 'Gold Find');
 options.get('amulet').set('m3', 'Pierce');
 options.get('amulet').set('m4', 'Replenish Life');
@@ -573,9 +575,10 @@ options.get('amulet').set('m5', 'Block Chance');
 options.get('amulet').set('m6', 'Faster Hit Recovery');
 options.get('amulet').set('m7', 'Mana Per Kill');
 options.get('amulet').set('m8', 'Life Per Kill');
+// amu tier 3
 options.get('amulet').set('r1', 'Magic Find');
 options.get('amulet').set('r2', 'Max All Resistances');
-options.get('amulet').set('r3', 'All Attributes');
+options.get('amulet').set('r3', 'Cannot Be Frozen');
 options.get('amulet').set('r4', 'Enhanced Damage');
 options.get('amulet').set('r5', 'Faster Run Walk');
 options.get('amulet').set('r6', 'Faster Cast Rate');
@@ -583,6 +586,7 @@ options.get('amulet').set('r7', '+1 Skill');
 options.get('amulet').set('r8', 'All Resistances');
 options.set('ring', new Map());
 options.get('ring').set('b', 'Brick');
+// ring tier 1
 options.get('ring').set('c1', 'Strength');
 options.get('ring').set('c2', 'Dexterity');
 options.get('ring').set('c3', 'Energy');
@@ -591,7 +595,8 @@ options.get('ring').set('c5', 'Cold Resist');
 options.get('ring').set('c6', 'Poison Resist');
 options.get('ring').set('c7', 'Light Resist');
 options.get('ring').set('c8', 'Fire Resist');
-options.get('ring').set('m1', 'Thorns');
+// ring tier 2
+options.get('ring').set('m1', 'Max Life');
 options.get('ring').set('m2', 'Magic Find');
 options.get('ring').set('m3', 'Gold Find');
 options.get('ring').set('m4', 'Attack Rating');
@@ -599,6 +604,7 @@ options.get('ring').set('m5', 'Flat Physical Damage Reduced');
 options.get('ring').set('m6', 'Flat Magic Damage Reduced');
 options.get('ring').set('m7', 'Mana Per Kill');
 options.get('ring').set('m8', 'Life Per Kill');
+// ring tier 3
 options.get('ring').set('r1', 'Mana Leech');
 options.get('ring').set('r2', 'Life Leech');
 options.get('ring').set('r3', 'All Attributes');
@@ -606,9 +612,10 @@ options.get('ring').set('r4', 'All Resistances');
 options.get('ring').set('r5', 'Faster Run Walk');
 options.get('ring').set('r6', 'Faster Cast Rate');
 options.get('ring').set('r7', '-Curse Duration');
-options.get('ring').set('r8', 'Cannot Be Frozen');
+options.get('ring').set('r8', '% Physical Damage Reduced');
 options.set('belt', new Map());
 options.get('belt').set('b', 'Brick');
+// belt tier 1
 options.get('belt').set('c1', 'Strength');
 options.get('belt').set('c2', 'Dexterity');
 options.get('belt').set('c3', 'Energy');
@@ -617,6 +624,7 @@ options.get('belt').set('c5', 'Cold Resist');
 options.get('belt').set('c6', 'Poison Resist');
 options.get('belt').set('c7', 'Light Resist');
 options.get('belt').set('c8', 'Fire Resist');
+// belt tier 2
 options.get('belt').set('m1', 'Thorns');
 options.get('belt').set('m2', 'Magic Find');
 options.get('belt').set('m3', 'Pierce');
@@ -624,7 +632,8 @@ options.get('belt').set('m4', 'Replenish Life');
 options.get('belt').set('m5', 'Gold Find');
 options.get('belt').set('m6', 'Faster Hit Recovery');
 options.get('belt').set('m7', 'All Attributes');
-options.get('belt').set('m8', 'Replenish Mana');
+options.get('belt').set('m8', 'Attack Rating');
+// belt tier 3
 options.get('belt').set('r1', '% Physical Damage Reduced');
 options.get('belt').set('r2', 'Increased Attack Speed');
 options.get('belt').set('r3', 'All Resistances');
@@ -635,6 +644,7 @@ options.get('belt').set('r7', 'Faster Cast Rate');
 options.get('belt').set('r8', '-Curse Duration');
 options.set('gloves', new Map());
 options.get('gloves').set('b', 'Brick');
+// gloves tier 1
 options.get('gloves').set('c1', 'Enhanced Defense');
 options.get('gloves').set('c2', 'Magic Find');
 options.get('gloves').set('c3', 'Gold Find');
@@ -643,6 +653,7 @@ options.get('gloves').set('c5', 'Cold Resist');
 options.get('gloves').set('c6', 'Poison Resist');
 options.get('gloves').set('c7', 'Light Resist');
 options.get('gloves').set('c8', 'Fire Resist');
+// gloves tier 2
 options.get('gloves').set('m1', 'Attack Rating');
 options.get('gloves').set('m2', 'Pierce');
 options.get('gloves').set('m3', 'Replenish Life');
@@ -651,6 +662,7 @@ options.get('gloves').set('m5', 'Mana Leech');
 options.get('gloves').set('m6', 'Block Speed');
 options.get('gloves').set('m7', 'All Attributes');
 options.get('gloves').set('m8', 'Max Life');
+// gloves tier 3
 options.get('gloves').set('r1', 'Deadly Strike');
 options.get('gloves').set('r2', 'Increased Attack Speed');
 options.get('gloves').set('r3', 'Enhanced Damage');
@@ -661,6 +673,7 @@ options.get('gloves').set('r7', 'Faster Cast Rate');
 options.get('gloves').set('r8', 'Mana Per Kill');
 options.set('boots', new Map());
 options.get('boots').set('b', 'Brick');
+// boots tier 1
 options.get('boots').set('c1', 'Enhanced Defense');
 options.get('boots').set('c2', 'Magic Find');
 options.get('boots').set('c3', 'Gold Find');
@@ -669,6 +682,7 @@ options.get('boots').set('c5', 'Cold Resist');
 options.get('boots').set('c6', 'Poison Resist');
 options.get('boots').set('c7', 'Light Resist');
 options.get('boots').set('c8', 'Fire Resist');
+// boots tier 2
 options.get('boots').set('m1', 'Block Speed');
 options.get('boots').set('m2', 'Max Life');
 options.get('boots').set('m3', 'Life Per Kill');
@@ -677,9 +691,10 @@ options.get('boots').set('m5', 'Indestructible + Enhanced Defense');
 options.get('boots').set('m6', 'All Resistances');
 options.get('boots').set('m7', 'Faster Hit Recovery');
 options.get('boots').set('m8', 'Replenish Life');
+// boots tier 3
 options.get('boots').set('r1', '-Curse Duration');
 options.get('boots').set('r2', 'Faster Run Walk');
-options.get('boots').set('r3', 'Cannot Be Frozen');
+options.get('boots').set('r3', 'Block Chance');
 options.get('boots').set('r4', '% Physical Damage Reduced');
 options.get('boots').set('r5', 'Max Cold Resist + Cold Resist');
 options.get('boots').set('r6', 'Max Poison Resist + Poison Resist');
@@ -687,14 +702,16 @@ options.get('boots').set('r7', 'Max Light Resist + Light Resist');
 options.get('boots').set('r8', 'Max Fire Resist + Fire Resist');
 options.set('armor', new Map());
 options.get('armor').set('b', 'Brick');
+// armor tier 1
 options.get('armor').set('c1', 'Enhanced Defense');
 options.get('armor').set('c2', 'Replenish Life');
 options.get('armor').set('c3', 'Faster Hit Recovery');
-options.get('armor').set('c4', 'Mana Regeneration');
+options.get('armor').set('c4', 'Magic Find');
 options.get('armor').set('c5', 'Cold Resist');
 options.get('armor').set('c6', 'Poison Resist');
 options.get('armor').set('c7', 'Light Resist');
 options.get('armor').set('c8', 'Fire Resist');
+// armor tier 2
 options.get('armor').set('m1', 'Thorns');
 options.get('armor').set('m2', 'Faster Cast Rate');
 options.get('armor').set('m3', 'Max Life %');
@@ -703,6 +720,7 @@ options.get('armor').set('m5', 'Flat Physical Damage Reduced');
 options.get('armor').set('m6', 'Flat Magic Damage Reduced');
 options.get('armor').set('m7', 'Cannot Be Frozen');
 options.get('armor').set('m8', 'Indestructible + Enhanced Defense');
+// armor tier 3
 options.get('armor').set('r1', '-Curse Duration');
 options.get('armor').set('r2', '+1 Skill');
 options.get('armor').set('r3', 'All Resistances');
@@ -713,14 +731,16 @@ options.get('armor').set('r7', 'Max Light Resist + Light Resist');
 options.get('armor').set('r8', 'Max Fire Resist + Fire Resist');
 options.set('helm', new Map());
 options.get('helm').set('b', 'Brick');
+// helm tier 1
 options.get('helm').set('c1', 'Enhanced Defense');
 options.get('helm').set('c2', 'Replenish Life');
 options.get('helm').set('c3', 'Faster Hit Recovery');
-options.get('helm').set('c4', 'Mana Regeneration');
+options.get('helm').set('c4', 'Magic Find');
 options.get('helm').set('c5', 'Cold Resist');
 options.get('helm').set('c6', 'Poison Resist');
 options.get('helm').set('c7', 'Light Resist');
 options.get('helm').set('c8', 'Fire Resist');
+// helm tier 2
 options.get('helm').set('m1', 'Indestructible + Enhanced Defense');
 options.get('helm').set('m2', 'Life Leech');
 options.get('helm').set('m3', 'Mana Leech');
@@ -729,6 +749,7 @@ options.get('helm').set('m5', 'Cannot Be Frozen');
 options.get('helm').set('m6', 'Life Per Kill');
 options.get('helm').set('m7', 'Mana Per Kill');
 options.get('helm').set('m8', 'Attack Rating + Light Radius');
+// helm tier 3
 options.get('helm').set('r1', '-Curse Duration');
 options.get('helm').set('r2', '+1 Skill');
 options.get('helm').set('r3', 'All Resistances');
@@ -739,14 +760,16 @@ options.get('helm').set('r7', 'Max Light Resist + Light Resist');
 options.get('helm').set('r8', 'Max Fire Resist + Fire Resist');
 options.set('shield', new Map());
 options.get('shield').set('b', 'Brick');
-options.get('shield').set('c1', 'Enhanced Defense');
+// shield tier 1
+options.get('shield').set('c1', 'Block Speed');
 options.get('shield').set('c2', 'Replenish Life');
 options.get('shield').set('c3', 'Faster Hit Recovery');
-options.get('shield').set('c4', 'Mana Regeneration');
+options.get('shield').set('c4', 'Magic Find');
 options.get('shield').set('c5', 'Cold Resist');
 options.get('shield').set('c6', 'Poison Resist');
 options.get('shield').set('c7', 'Light Resist');
 options.get('shield').set('c8', 'Fire Resist');
+// shield tier 2
 options.get('shield').set('m1', 'Thorns');
 options.get('shield').set('m2', 'Faster Cast Rate');
 options.get('shield').set('m3', 'Max Life %');
@@ -755,6 +778,7 @@ options.get('shield').set('m5', 'Flat Physical Damage Reduced');
 options.get('shield').set('m6', 'Flat Magic Damage Reduced');
 options.get('shield').set('m7', 'Cannot Be Frozen');
 options.get('shield').set('m8', 'Indestructible + Enhanced Defense');
+// shield tier 3
 options.get('shield').set('r1', '-Curse Duration');
 options.get('shield').set('r2', '+1 Skill');
 options.get('shield').set('r3', 'All Resistances');
@@ -765,6 +789,7 @@ options.get('shield').set('r7', 'Max Light Resist + Light Resist');
 options.get('shield').set('r8', 'Max Fire Resist + Fire Resist');
 options.set('weapon', new Map());
 options.get('weapon').set('b', 'Brick');
+// weapons tier 1
 options.get('weapon').set('c1', 'Enhanced Damage');
 options.get('weapon').set('c2', 'Life on Hit');
 options.get('weapon').set('c3', 'Demon Damage + Attack Rating');
@@ -772,9 +797,10 @@ options.get('weapon').set('c4', '-Requirements');
 options.get('weapon').set('c5', 'Magic Find');
 options.get('weapon').set('c6', 'Life Per Kill');
 options.get('weapon').set('c7', 'Mana Per Kill');
-options.get('weapon').set('c8', 'Mana');
-options.get('weapon').set('c9', 'Faster Hit Recovery');
+options.get('weapon').set('c8', 'Faster Cast Rate');
+options.get('weapon').set('c9', 'Undead Damage + Attack Rating');
 options.get('weapon').set('c10', 'Attack Rating');
+// weapons tier 2
 options.get('weapon').set('m1', 'Attack Rating 200+'); // was Thorns
 options.get('weapon').set('m2', 'Light Pierce');
 options.get('weapon').set('m3', 'Cold Pierce');
@@ -785,6 +811,7 @@ options.get('weapon').set('m7', 'Life Leech + Enhanced Damage');
 options.get('weapon').set('m8', 'Deadly Strike');
 options.get('weapon').set('m9', 'Increased Attack Speed');
 options.get('weapon').set('m10', 'Crushing Blow');
+// weapons tier 3
 options.get('weapon').set('r1', 'Increased Attack Speed + Enhanced Damage');
 options.get('weapon').set('r2', 'Increased Attack Speed + Crushing Blow');
 options.get('weapon').set('r3', 'Ignore Target Defense + Enhanced Damage');
@@ -795,6 +822,7 @@ options.get('weapon').set('r7', 'Fire Damage + Faster Cast Rate');
 options.get('weapon').set('r8', 'Cold Damage + Faster Cast Rate');
 options.get('weapon').set('r9', 'Light Damage + Faster Cast Rate');
 options.get('weapon').set('r10', 'Poison Damage + Faster Cast Rate');
+
 options.set('anni', new Map());
 options.get('anni').set('b', 'Brick');
 options.get('anni').set('c1', '+1 Skill');
